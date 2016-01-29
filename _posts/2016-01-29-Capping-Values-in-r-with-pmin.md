@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Capping numbers in r with'pmin()'!
+title: Capping numbers in r with pmin()
 ---
 
 What we'd like to do here is recode all values greater than a certain number to that number. There are some other ways to do this but in one line use the `pmin()` function. eg:
