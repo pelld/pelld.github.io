@@ -11,11 +11,11 @@ This is blogs serves as a collection of code - mainly in r - that I have needed 
 ### More Information
 
 Interests: 
-Quantile Regression
-Survey design
-Semi-continuous data
-CPRD
-Public Health Nutrition
+- Quantile Regression
+- Survey design
+- Semi-continuous data
+- CPRD
+- Public Health Nutrition
 
 ### Contact me
 
