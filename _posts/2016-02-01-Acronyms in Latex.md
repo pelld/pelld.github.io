@@ -3,7 +3,7 @@ layout: post
 title: Acronyms and Abbreviations in Latex
 ---
 
-It is possible to use a package to control this abbreviations and acronyms in Latex. The abbreviations are defined once within the .tex file and then referenced in the text similar to for instance a table. This means that the first time a name appears it is written in full then is abbreviatied in subsequent appearances. 
+It is possible to use a package to control the abbreviations and acronyms in Latex. The abbreviations are defined once within the .tex file and then referenced in the text similar to, for instance, a table. This means that the first time a name appears it is written in full then is abbreviatied in subsequent appearances. 
 
 ```
 \documentclass{article}
