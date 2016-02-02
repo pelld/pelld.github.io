@@ -1,7 +1,8 @@
 ---
-layout: blog
+layout: post
 title: Renaming Variables in r
 ---
+
 There are two main occasions when one might want to rename a variable either
 - a single variable by name
 - a single variable by position
