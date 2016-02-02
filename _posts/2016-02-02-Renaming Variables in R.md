@@ -1,7 +1,7 @@
 ---
 layout: blog
 title: Renaming Variables in r
-
+---
 
 #Renaming variables
 
