@@ -3,7 +3,7 @@ layout: blog
 title: Renaming Variables in r
 ---
 
-#Renaming variables
+Renaming variables
 
 There are two main occasions when one might want to rename a variable either
 - a single variable by name
@@ -16,7 +16,7 @@ df <- data.frame(var1 = rnorm(10), var2 = rnorm(10))
 ```
 this gives three variables called `var1` and `var2`
 
-##Renaming a variable by name 
+Renaming a variable by name 
 
 Renaming a variable by name can be done as follows:
 ```{r}
@@ -24,7 +24,7 @@ names(df)[names(df)=="var1"] <- "id"
 ```
 which takes `var1` from the data frame `df` that was just created and names it `id`
 
-##Renaming a variable by position
+Renaming a variable by position
 
 ```{r}
 colnames(df)[2] <- "Age"
