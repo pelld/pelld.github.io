@@ -3,7 +3,7 @@ layout: post
 title: Posting with GitHub
 ---
 
-To post with GitHub I am assuming you have followed the steps detailed by `Andy South` here: http://andysouth.github.io/blog-setup/. Then to get cracking create a new file in the `_posts` folder and copy this 
+To post with GitHub I am assuming you have followed the steps detailed by `Andy South` here: <http://andysouth.github.io/blog-setup/>. Then to get cracking create a new file in the `_posts` folder and copy this 
 
 ```
 ---
