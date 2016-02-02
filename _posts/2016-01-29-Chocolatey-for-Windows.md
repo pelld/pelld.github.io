@@ -3,8 +3,6 @@ layout: blog
 title: Installing Chocolatey for Windows
 ---
 
-# Chocolatey for Windows
-
 I was strugging to download Chocolatey and I eventually found the answer which as it usually does involved changing the path. Anyway this piece of code worked for me - simply open the command prompt i.e. type 'cmd` on the search box on the start menu then paste this code in and you should be away.
 
 ```{html}
