@@ -1,5 +1,5 @@
 ---
-layout: blog
+layout: post
 title: Frequency Tables in SAS
 ---
 
