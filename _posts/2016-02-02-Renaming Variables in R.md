@@ -17,6 +17,7 @@ this gives three variables called `var1` and `var2`
 Renaming a variable by name 
 
 Renaming a variable by name can be done as follows:
+
 ```{r}
 names(df)[names(df)=="var1"] <- "id"
 ```
