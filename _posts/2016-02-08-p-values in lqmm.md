@@ -23,3 +23,5 @@ p.values <- 2 * pt(-abs(summary.fit.lqmm$tTable[,1]/summary.fit.lqmm$tTable[,2])
 all(summary.fit.lqmm$tTable[,5]==p.values)
 ```
 
+The `pt` function, sampling from the `t-distribution` requires the number of degrees of freedom to be specified. In the `summary.lqmm` function this takes the number of bootstrap runs - and subtracts one. I would assume that degrees of freedom in a survey lqmm would come either from the number of PSUs or the number of bootstrap runs minus the number of parameters being estimated. I don't think this will make a massive difference as there are both similar at 795 PSUs and 500 bootstrap runs. 
+
