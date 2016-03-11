@@ -29,7 +29,7 @@ Renaming a variable by position
 colnames(df)[2] <- "Age"
 ```
 A further useful way of changing a variable name is when it contains a character that you would like removed. This may have occured, for example, because it has been created by default in r and could look something like `Age.1`. If you would like to remove the `.1` then use you can use:
-```{r}
+```
 df <- data.frame(var1.1 = rnorm(10), var2.1 = rnorm(10))
 names(df) <- sub("\\.1", "", names(df))
 ```
