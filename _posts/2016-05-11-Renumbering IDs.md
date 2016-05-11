@@ -12,7 +12,7 @@ df <- data.frame(OldID = seq((x=sample(10^6,1)),x+99),Value=rnorm(100))
 This samples a 6 digit random number then adds 1 100 times and `Value` just generates some random numbers. Then to restart these numbers from 1 use 
 
 ```
-NDNS <- transform(NDNS, id = as.numeric(interaction(ISerial, drop=TRUE)))
+df <- transform(df, id = as.numeric(interaction(OldID, drop=TRUE)))
 ```
 This also works when there are repeated IDs, for example
 
