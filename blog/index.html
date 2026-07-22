@@ -1,0 +1,18 @@
+---
+layout: page
+title: Jarb archive
+permalink: /blog/
+---
+
+<p class="archive-intro">Short coding notes from 2016. These posts have been kept as an archive, with their original web addresses unchanged.</p>
+
+<div class="posts">
+  {% for post in site.posts %}
+    <article class="post archive-post">
+      <p class="archive-date">{{ post.date | date: "%d %B %Y" }}</p>
+      <h2><a href="{{ site.baseurl }}{{ post.url }}">{{ post.title }}</a></h2>
+      <div class="entry">{{ post.excerpt }}</div>
+      <a href="{{ site.baseurl }}{{ post.url }}" class="read-more">Read post →</a>
+    </article>
+  {% endfor %}
+</div>
