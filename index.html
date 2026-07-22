@@ -1,43 +1,43 @@
 ---
-layout: default
+layout: home
 title: Projects
 ---
 
-<section class="project-hero">
-  <p class="eyebrow">pelld projects</p>
-  <h1>Games, tools and experiments.</h1>
-  <p>A growing collection of things made for the web — some useful, some playful, and some still being worked out.</p>
-</section>
+<main>
+  <section class="hero shell">
+    <div class="hero-copy">
+      <p class="kicker">Independent web projects</p>
+      <h1>Useful things.<br><span>Playful things.</span></h1>
+      <p class="hero-intro">A collection of games, tools and experiments made to solve a problem, explore an idea or simply see if it can be done.</p>
+      <div class="hero-actions"><a class="button button-dark" href="#projects">Explore projects</a><a class="text-link" href="{{ site.baseurl }}/blog/">Visit the old R blog <span>→</span></a></div>
+    </div>
+    <div class="hero-graphic" aria-hidden="true">
+      <div class="orbit orbit-one"></div><div class="orbit orbit-two"></div>
+      <div class="shape shape-purple">?</div><div class="shape shape-green">↗</div><div class="shape shape-orange">✦</div>
+      <div class="graphic-card"><span>Currently exploring</span><strong>art · maps · games</strong></div>
+    </div>
+  </section>
 
-<section class="project-section">
-  <div class="section-heading">
-    <div><p class="eyebrow">Explore</p><h2>Tools and experiments</h2></div>
-  </div>
-  <div class="project-grid project-grid-featured">
-    <a class="project-card card-art" href="https://pelld.github.io/where-is-the-art/">
-      <span class="project-label">Art explorer</span>
-      <h3>Where Is the Art?</h3>
-      <p>Discover which museums hold works by an artist, or see what art is nearby when planning a trip.</p>
-      <span class="project-link">Explore the map <span aria-hidden="true">→</span></span>
+  <section class="work shell" id="projects">
+    <div class="section-title"><div><p class="kicker">Featured project</p><h2>Find art anywhere.</h2></div><p>Search by artist to discover where their work is held, or start with a place to see what is nearby.</p></div>
+    <a class="feature-card" href="https://pelld.github.io/where-is-the-art/">
+      <div class="feature-copy"><span class="pill">Interactive art explorer</span><h3>Where Is the Art?</h3><p>From Rembrandt to Michelangelo: explore artworks, museums and locations on one map.</p><span class="open-link">Open the project <b>↗</b></span></div>
+      <div class="map-art" aria-hidden="true"><div class="land land-one"></div><div class="land land-two"></div><i class="pin pin-one"></i><i class="pin pin-two"></i><i class="pin pin-three"></i><div class="map-panel"><span>Artist</span><strong>Rembrandt</strong><small>Works across Europe</small></div></div>
     </a>
-  </div>
-</section>
+  </section>
 
-<section class="project-section">
-  <div class="section-heading">
-    <div><p class="eyebrow">Burtree Gaming Studios</p><h2>Games</h2></div>
-    <p>Small, phone-friendly games made for family and friends.</p>
-  </div>
-  <div class="project-grid">
-    <a class="project-card card-quiz" href="https://pelld.github.io/quiz-duel-stars/"><span class="project-label">Quiz</span><h3>Quiz Duel Stars</h3><p>A head-to-head trivia game for playing together across two devices.</p><span class="project-link">Play <span aria-hidden="true">→</span></span></a>
-    <a class="project-card card-nepal" href="https://pelld.github.io/amelia-nepal-game/"><span class="project-label">Adventure</span><h3>Amelia in Nepal</h3><p>A mountain adventure through Nepal, built as a personalised game.</p><span class="project-link">Play <span aria-hidden="true">→</span></span></a>
-    <a class="project-card card-bike" href="https://pelld.github.io/hunter-dirt-bike-adventure/"><span class="project-label">Action</span><h3>Hunter's Dirt Bike Adventure</h3><p>Ride, jump and perform tricks across a North Pennines landscape.</p><span class="project-link">Play <span aria-hidden="true">→</span></span></a>
-    <a class="project-card card-dash" href="https://pelld.github.io/dirt-bike-dash/"><span class="project-label">Two player</span><h3>Dirt Bike Dash</h3><p>A quick dirt-bike challenge designed for two players.</p><span class="project-link">Play <span aria-hidden="true">→</span></span></a>
-    <a class="project-card card-animal" href="https://pelld.github.io/animal-dash/"><span class="project-label">Arcade</span><h3>Animal Dash</h3><p>A bright, simple action game suitable for younger players.</p><span class="project-link">Play <span aria-hidden="true">→</span></span></a>
-  </div>
-</section>
+  <section class="games-section" id="games">
+    <div class="shell">
+      <div class="section-title light"><div><p class="kicker">Burtree Gaming Studios</p><h2>Made to be played.</h2></div><p>Small, phone-friendly games built for family, friends and two-player challenges.</p></div>
+      <div class="games-grid">
+        <a class="game-card game-quiz" href="https://pelld.github.io/quiz-duel-stars/"><div class="game-visual"><span class="quiz-bubble">?</span><span class="quiz-bubble second">!</span></div><div class="game-copy"><span>Quiz · Two devices</span><h3>Quiz Duel Stars</h3><p>Fast head-to-head trivia, played together from different phones.</p><b>Play now ↗</b></div></a>
+        <a class="game-card game-nepal" href="https://pelld.github.io/amelia-nepal-game/"><div class="game-visual"><div class="mountain back"></div><div class="mountain front"></div><span class="sun"></span></div><div class="game-copy"><span>Personal adventure</span><h3>Amelia in Nepal</h3><p>A journey through the mountains, made as a personalised game.</p><b>Play now ↗</b></div></a>
+        <a class="game-card game-bike" href="https://pelld.github.io/hunter-dirt-bike-adventure/"><div class="game-visual"><div class="trail"></div><span class="wheel wheel-one"></span><span class="wheel wheel-two"></span><span class="rider">↗</span></div><div class="game-copy"><span>Action · Tricks</span><h3>Hunter's Dirt Bike Adventure</h3><p>Ride, jump and perform tricks across the North Pennines.</p><b>Play now ↗</b></div></a>
+        <a class="game-card game-dash" href="https://pelld.github.io/dirt-bike-dash/"><div class="game-visual speed-lines"><strong>GO!</strong></div><div class="game-copy"><span>Race · Two player</span><h3>Dirt Bike Dash</h3><p>A quick dirt-bike challenge made for racing a friend.</p><b>Play now ↗</b></div></a>
+        <a class="game-card game-animal" href="https://pelld.github.io/animal-dash/"><div class="game-visual animal-faces"><span>●ᴥ●</span><span>•ᴥ•</span><span>●ᴥ●</span></div><div class="game-copy"><span>Arcade · Younger players</span><h3>Animal Dash</h3><p>A bright and simple action game for quick bursts of play.</p><b>Play now ↗</b></div></a>
+      </div>
+    </div>
+  </section>
 
-<section class="archive-strip">
-  <div><p class="eyebrow">From the archive</p><h2>Jarb: Just another R blog</h2><p>Short notes about R, SQL, SAS and assorted coding problems, written in 2016.</p></div>
-  <a class="archive-button" href="{{ site.baseurl }}/blog/">Browse the old blog <span aria-hidden="true">→</span></a>
-</section>
+  <section class="archive shell" id="archive"><div class="archive-number">2016</div><div class="archive-copy"><p class="kicker">Still here, safely archived</p><h2>Jarb: Just another R blog</h2><p>The original collection of short notes on R, SQL, SAS and coding problems. The blog and all its original posts remain available.</p></div><a class="button button-light" href="{{ site.baseurl }}/blog/">Browse the archive →</a></section>
+</main>

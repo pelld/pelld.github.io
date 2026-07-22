@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ page.title }} · {{ site.name }}</title>
+    <meta name="description" content="{{ site.description }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ site.baseurl }}/home.css">
+  </head>
+  <body>
+    <header class="home-header shell"><a class="wordmark" href="{{ site.baseurl }}/"><span>p</span> pelld projects</a><nav><a href="#projects">Projects</a><a href="#games">Games</a><a href="{{ site.baseurl }}/blog/">Archive</a><a class="nav-github" href="https://github.com/pelld">GitHub ↗</a></nav></header>
+    {{ content }}
+    <footer class="home-footer"><div class="shell"><a class="wordmark footer-mark" href="{{ site.baseurl }}/"><span>p</span> pelld projects</a><p>Games, tools and experiments.</p><a href="https://github.com/pelld">View code on GitHub ↗</a></div></footer>
+  </body>
+</html>
