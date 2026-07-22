@@ -1,18 +1,43 @@
 ---
 layout: default
+title: Projects
 ---
 
-<div class="posts">
-  {% for post in site.posts %}
-    <article class="post">
+<section class="project-hero">
+  <p class="eyebrow">pelld projects</p>
+  <h1>Games, tools and experiments.</h1>
+  <p>A growing collection of things made for the web — some useful, some playful, and some still being worked out.</p>
+</section>
 
-      <h1><a href="{{ site.baseurl }}{{ post.url }}">{{ post.title }}</a></h1>
+<section class="project-section">
+  <div class="section-heading">
+    <div><p class="eyebrow">Explore</p><h2>Tools and experiments</h2></div>
+  </div>
+  <div class="project-grid project-grid-featured">
+    <a class="project-card card-art" href="https://pelld.github.io/where-is-the-art/">
+      <span class="project-label">Art explorer</span>
+      <h3>Where Is the Art?</h3>
+      <p>Discover which museums hold works by an artist, or see what art is nearby when planning a trip.</p>
+      <span class="project-link">Explore the map <span aria-hidden="true">→</span></span>
+    </a>
+  </div>
+</section>
 
-      <div class="entry">
-        {{ post.excerpt }}
-      </div>
+<section class="project-section">
+  <div class="section-heading">
+    <div><p class="eyebrow">Burtree Gaming Studios</p><h2>Games</h2></div>
+    <p>Small, phone-friendly games made for family and friends.</p>
+  </div>
+  <div class="project-grid">
+    <a class="project-card card-quiz" href="https://pelld.github.io/quiz-duel-stars/"><span class="project-label">Quiz</span><h3>Quiz Duel Stars</h3><p>A head-to-head trivia game for playing together across two devices.</p><span class="project-link">Play <span aria-hidden="true">→</span></span></a>
+    <a class="project-card card-nepal" href="https://pelld.github.io/amelia-nepal-game/"><span class="project-label">Adventure</span><h3>Amelia in Nepal</h3><p>A mountain adventure through Nepal, built as a personalised game.</p><span class="project-link">Play <span aria-hidden="true">→</span></span></a>
+    <a class="project-card card-bike" href="https://pelld.github.io/hunter-dirt-bike-adventure/"><span class="project-label">Action</span><h3>Hunter's Dirt Bike Adventure</h3><p>Ride, jump and perform tricks across a North Pennines landscape.</p><span class="project-link">Play <span aria-hidden="true">→</span></span></a>
+    <a class="project-card card-dash" href="https://pelld.github.io/dirt-bike-dash/"><span class="project-label">Two player</span><h3>Dirt Bike Dash</h3><p>A quick dirt-bike challenge designed for two players.</p><span class="project-link">Play <span aria-hidden="true">→</span></span></a>
+    <a class="project-card card-animal" href="https://pelld.github.io/animal-dash/"><span class="project-label">Arcade</span><h3>Animal Dash</h3><p>A bright, simple action game suitable for younger players.</p><span class="project-link">Play <span aria-hidden="true">→</span></span></a>
+  </div>
+</section>
 
-      <a href="{{ site.baseurl }}{{ post.url }}" class="read-more">Read More</a>
-    </article>
-  {% endfor %}
-</div>
+<section class="archive-strip">
+  <div><p class="eyebrow">From the archive</p><h2>Jarb: Just another R blog</h2><p>Short notes about R, SQL, SAS and assorted coding problems, written in 2016.</p></div>
+  <a class="archive-button" href="{{ site.baseurl }}/blog/">Browse the old blog <span aria-hidden="true">→</span></a>
+</section>
