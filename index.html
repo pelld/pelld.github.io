@@ -26,6 +26,37 @@ title: Projects
     </a>
   </section>
 
+  <!-- ============================================================
+       02. HEALTH, EVIDENCE AND SYSTEMS
+       ============================================================ -->
+  <section class="insights-section" id="insights">
+    <div class="shell">
+      <div class="section-title"><div><p class="kicker">Health, evidence and systems</p><h2>Explore the difficult questions.</h2></div><p>Interactive prototypes for investigating population health, evidence and the consequences of decisions across complex systems.</p></div>
+      <div class="insights-grid">
+        <a class="insight-card insight-system" href="https://pelld.github.io/population-health-system-explorer/">
+          <div class="insight-visual system-visual" aria-hidden="true"><span class="system-node node-a"></span><span class="system-node node-b"></span><span class="system-node node-c"></span><span class="system-node node-d"></span><i class="system-line line-a"></i><i class="system-line line-b"></i><i class="system-line line-c"></i></div>
+          <div class="insight-copy"><span class="project-status">Interactive systems map · Prototype</span><h3>Population Health: The Whole System</h3><p>Follow the relationships between wider determinants, prevention, treatment, recovery and longer lives—and keep asking why.</p><b>Explore the system ↗</b></div>
+        </a>
+        <a class="insight-card insight-prize" href="https://pelld.github.io/population-health-size-of-prize/">
+          <div class="insight-visual prize-visual" aria-hidden="true"><span class="body-head"></span><span class="body-core"></span><i class="body-point point-a"></i><i class="body-point point-b"></i><i class="body-point point-c"></i><strong>£1 → ?</strong></div>
+          <div class="insight-copy"><span class="project-status">Decision support · Illustrative prototype</span><h3>Population Health: Size of the Prize</h3><p>Explore how interventions affect the whole person and compare health, financial and societal returns.</p><b>Explore the opportunity ↗</b></div>
+        </a>
+        <a class="insight-card insight-atlas" href="https://pelld.github.io/population-health-atlas/">
+          <div class="insight-visual atlas-visual" aria-hidden="true"><div class="atlas-map"></div><i class="atlas-dot dot-a"></i><i class="atlas-dot dot-b"></i><i class="atlas-dot dot-c"></i><span>QOF</span></div>
+          <div class="insight-copy"><span class="project-status">Geographic analysis · Demonstration data</span><h3>Population Health Atlas</h3><p>Investigate where recorded long-term conditions cluster and what remains after adjustment for deprivation.</p><b>Open the atlas ↗</b></div>
+        </a>
+        <a class="insight-card insight-pvalue" href="https://pelld.github.io/p-value-explorer/">
+          <div class="insight-visual pvalue-visual" aria-hidden="true"><i style="--h:34%"></i><i style="--h:58%"></i><i style="--h:82%"></i><i style="--h:48%"></i><i class="threshold" style="--h:92%"></i><i style="--h:28%"></i><span>p = .05</span></div>
+          <div class="insight-copy"><span class="project-status">PubMed evidence explorer</span><h3>P-Value Explorer</h3><p>Search PubMed abstracts, extract reported p-values and inspect their distribution around the 0.05 threshold.</p><b>Explore the evidence ↗</b></div>
+        </a>
+      </div>
+      <p class="prototype-note"><strong>About the prototypes:</strong> several projects currently use illustrative or demonstration data to develop the design and analytical approach. Each site explains what its results can—and cannot—show.</p>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       03. BURTREE GAMING STUDIOS
+       ============================================================ -->
   <section class="games-section" id="games">
     <div class="shell">
       <div class="section-title light"><div><p class="kicker">Burtree Gaming Studios</p><h2>Made to be played.</h2></div><p>Small, phone-friendly games built for family, friends and two-player challenges.</p></div>
@@ -39,5 +70,19 @@ title: Projects
     </div>
   </section>
 
+  <!-- ============================================================
+       04. AUTOMATIC SITE DIRECTORY
+       ============================================================ -->
+  <section class="directory shell" id="directory">
+    <div class="section-title"><div><p class="kicker">All public sites</p><h2>The complete directory.</h2></div><p>This list is read from GitHub automatically, so newly published public Pages sites can appear without rebuilding the homepage.</p></div>
+    <div id="site-directory" class="directory-grid" aria-live="polite"><p class="directory-loading">Looking for published sites…</p></div>
+    <p class="directory-note">The curated projects above include fuller descriptions. Login-protected and explicitly hidden projects are excluded from this public directory.</p>
+  </section>
+
+  <!-- ============================================================
+       05. BLOG ARCHIVE
+       ============================================================ -->
   <section class="archive shell" id="archive"><div class="archive-number">2016</div><div class="archive-copy"><p class="kicker">Still here, safely archived</p><h2>Jarb: Just another R blog</h2><p>The original collection of short notes on R, SQL, SAS and coding problems. The blog and all its original posts remain available.</p></div><a class="button button-light" href="{{ site.baseurl }}/blog/">Browse the archive →</a></section>
 </main>
+
+<script src="{{ site.baseurl }}/site-directory.js" defer></script>
