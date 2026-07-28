@@ -3,97 +3,102 @@ layout: home
 title: Projects
 ---
 
-<!-- ============================================================
-     01. INTERACTIVE QUESTION FIELD
-     Every visible question is a real hyperlink. JavaScript adds
-     motion, relationships and previews but is not needed to navigate.
-     ============================================================ -->
-<main class="question-stage" id="question-stage">
-  <div class="stage-light" aria-hidden="true"></div>
-  <div class="stage-grid" aria-hidden="true"></div>
-  <div class="stage-grain" aria-hidden="true"></div>
-  <div class="stage-mark" id="stage-mark" aria-hidden="true">?</div>
+<main>
+  <!-- ============================================================
+       01. INTERACTIVE PROJECT CONSTELLATION
+       Every orbit is a genuine hyperlink. The visual network is the
+       navigation rather than decoration sitting above navigation.
+       ============================================================ -->
+  <section class="constellation-stage" id="constellation-stage" aria-labelledby="constellation-title">
+    <div class="stage-grid" aria-hidden="true"></div>
+    <div class="stage-noise" aria-hidden="true"></div>
+    <div class="stage-light" aria-hidden="true"></div>
+    <div class="stage-aurora stage-aurora-one" aria-hidden="true"></div>
+    <div class="stage-aurora stage-aurora-two" aria-hidden="true"></div>
 
-  <svg class="question-lines" id="question-lines" aria-hidden="true">
-    <g id="question-line-group"></g>
-  </svg>
-
-  <section class="stage-intro" aria-labelledby="stage-title">
-    <p><span></span> Independent web experiments</p>
-    <h1 id="stage-title">Choose a question.</h1>
-    <div class="stage-intro-row">
-      <span>Each question is a project.</span>
-      <span>Click to open it.</span>
+    <div class="stage-intro">
+      <p id="constellation-title"><span></span> Selected work</p>
+      <strong>Click any orbit.</strong>
     </div>
+
+    <div class="territory territory-analyse" aria-hidden="true">Analyse</div>
+    <div class="territory territory-explore" aria-hidden="true">Explore</div>
+    <div class="territory territory-play" aria-hidden="true">Play</div>
+
+    <svg class="constellation-lines" id="constellation-lines" aria-hidden="true" preserveAspectRatio="none">
+      <defs>
+        <filter id="line-glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="2.2" result="blur"></feGaussianBlur><feMerge><feMergeNode in="blur"></feMergeNode><feMergeNode in="SourceGraphic"></feMergeNode></feMerge></filter>
+      </defs>
+      <g id="constellation-line-group"></g>
+    </svg>
+
+    <div class="constellation-field" id="constellation-field">
+      <a class="project-orbit orbit-flow" href="https://pelld.github.io/patient-flow-explorer/" data-index="0" data-group="analyse" data-colour="#70d7c0" data-title="Patient Flow Explorer" data-description="Explore how pressure and delay move through a health and care system." aria-label="Open Patient Flow Explorer">
+        <span class="orbit-ring"><i></i><b>↗</b></span><span class="orbit-label">Patient flow</span>
+      </a>
+
+      <a class="project-orbit orbit-system" href="https://pelld.github.io/population-health-system-explorer/" data-index="1" data-group="analyse" data-colour="#65dfbd" data-title="Population Health: The Whole System" data-description="Follow relationships across determinants, prevention, treatment and recovery." aria-label="Open Population Health: The Whole System">
+        <span class="orbit-ring"><i></i><b>↗</b></span><span class="orbit-label">Whole system</span>
+      </a>
+
+      <a class="project-orbit orbit-prize" href="https://pelld.github.io/population-health-size-of-prize/" data-index="2" data-group="analyse" data-colour="#c9ea69" data-title="Population Health: Size of the Prize" data-description="Compare the potential health, financial and societal returns from intervention." aria-label="Open Population Health: Size of the Prize">
+        <span class="orbit-ring"><i></i><b>↗</b></span><span class="orbit-label">Size of the prize</span>
+      </a>
+
+      <a class="project-orbit orbit-atlas" href="https://pelld.github.io/population-health-atlas/" data-index="3" data-group="analyse" data-colour="#72b8ef" data-title="Population Health Atlas" data-description="Explore geographic clustering in recorded long-term condition prevalence." aria-label="Open Population Health Atlas">
+        <span class="orbit-ring"><i></i><b>↗</b></span><span class="orbit-label">Health atlas</span>
+      </a>
+
+      <a class="project-orbit orbit-pvalue" href="https://pelld.github.io/p-value-explorer/" data-index="4" data-group="analyse" data-colour="#a88cf1" data-title="P-Value Explorer" data-description="Inspect p-values reported in PubMed abstracts around the 0.05 threshold." aria-label="Open P-Value Explorer">
+        <span class="orbit-ring"><i></i><b>↗</b></span><span class="orbit-label">P-value explorer</span>
+      </a>
+
+      <a class="project-orbit orbit-art" href="https://pelld.github.io/where-is-the-art/" data-index="5" data-group="explore" data-colour="#ff8f70" data-title="Where Is the Art?" data-description="Find artworks and museums by artist or by the place you are visiting." aria-label="Open Where Is the Art">
+        <span class="orbit-ring"><i></i><b>↗</b></span><span class="orbit-label">Where is the art?</span>
+      </a>
+
+      <a class="project-orbit orbit-quiz" href="https://pelld.github.io/quiz-duel-stars/" data-index="6" data-group="play" data-colour="#f0d361" data-title="Quiz Duel Stars" data-description="A head-to-head quiz played together across two different devices." aria-label="Open Quiz Duel Stars">
+        <span class="orbit-ring"><i></i><b>↗</b></span><span class="orbit-label">Quiz duel</span>
+      </a>
+
+      <a class="project-orbit orbit-nepal" href="https://pelld.github.io/amelia-nepal-game/" data-index="7" data-group="play" data-colour="#75d8c8" data-title="Amelia in Nepal" data-description="A personalised playable journey through the mountains of Nepal." aria-label="Open Amelia in Nepal">
+        <span class="orbit-ring"><i></i><b>↗</b></span><span class="orbit-label">Amelia in Nepal</span>
+      </a>
+
+      <a class="project-orbit orbit-hunter" href="https://pelld.github.io/hunter-dirt-bike-adventure/" data-index="8" data-group="play" data-colour="#e9a963" data-title="Hunter's Dirt Bike Adventure" data-description="Ride, jump and perform tricks across the North Pennines." aria-label="Open Hunter's Dirt Bike Adventure">
+        <span class="orbit-ring"><i></i><b>↗</b></span><span class="orbit-label">Dirt bike adventure</span>
+      </a>
+
+      <a class="project-orbit orbit-dash" href="https://pelld.github.io/dirt-bike-dash/" data-index="9" data-group="play" data-colour="#f27d79" data-title="Dirt Bike Dash" data-description="A quick two-player dirt-bike racing challenge." aria-label="Open Dirt Bike Dash">
+        <span class="orbit-ring"><i></i><b>↗</b></span><span class="orbit-label">Dirt bike dash</span>
+      </a>
+
+      <a class="project-orbit orbit-animal" href="https://pelld.github.io/animal-dash/" data-index="10" data-group="play" data-colour="#e98ab2" data-title="Animal Dash" data-description="A bright arcade game designed for younger players and quick play." aria-label="Open Animal Dash">
+        <span class="orbit-ring"><i></i><b>↗</b></span><span class="orbit-label">Animal dash</span>
+      </a>
+    </div>
+
+    <div class="project-readout" id="project-readout" aria-live="polite">
+      <span class="readout-index" id="readout-index">01</span>
+      <div class="readout-copy"><strong id="readout-title">Population Health: The Whole System</strong><p id="readout-description">Move across the constellation. Each orbit is a direct project link.</p></div>
+      <span class="readout-action" id="readout-action">Select a project ↗</span>
+    </div>
+
+    <div class="stage-key" aria-hidden="true"><span></span> Direct links · hover to reveal connections</div>
   </section>
-
-  <!-- ============================================================
-       02. DIRECT PROJECT LINKS
-       Position, scale and colour are deliberately stored with each
-       project so this remains straightforward to edit later.
-       ============================================================ -->
-  <nav class="question-field" id="question-field" aria-label="Featured projects">
-    <a class="question-link" href="https://pelld.github.io/population-health-system-explorer/" data-index="0" data-group="analyse" data-colour="#72dfbd" data-mark="SYSTEM" data-project-title="Population Health: The Whole System" data-description="Explore the relationships between wider determinants, prevention, treatment and recovery." style="--x:6%;--y:28%;--size:42px;--width:390px;--delay:.04s">
-      <span class="question-number">01</span><span class="question-text">What shapes population health?</span><span class="question-arrow">↗</span>
-    </a>
-
-    <a class="question-link" href="https://pelld.github.io/population-health-size-of-prize/" data-index="1" data-group="analyse" data-colour="#d7ef72" data-mark="£→?" data-project-title="Population Health: Size of the Prize" data-description="Compare the potential health, financial and societal impact of population health interventions." style="--x:43%;--y:23%;--size:29px;--width:350px;--delay:.1s">
-      <span class="question-number">02</span><span class="question-text">Where is the biggest opportunity?</span><span class="question-arrow">↗</span>
-    </a>
-
-    <a class="question-link" href="https://pelld.github.io/patient-flow-explorer/" data-index="2" data-group="analyse" data-colour="#75d4f2" data-mark="FLOW" data-project-title="Patient Flow Explorer" data-description="Follow a patient pathway and investigate where demand, delay and capacity interact." style="--x:71%;--y:31%;--size:27px;--width:285px;--delay:.16s">
-      <span class="question-number">03</span><span class="question-text">Where does the patient journey break?</span><span class="question-arrow">↗</span>
-    </a>
-
-    <a class="question-link" href="https://pelld.github.io/p-value-explorer/" data-index="3" data-group="analyse" data-colour="#a98cf2" data-mark="p=.05" data-project-title="P-Value Explorer" data-description="Search PubMed abstracts and inspect the distribution of reported p-values around the 0.05 threshold." style="--x:36%;--y:49%;--size:33px;--width:365px;--delay:.22s">
-      <span class="question-number">04</span><span class="question-text">What hides around p = .05?</span><span class="question-arrow">↗</span>
-    </a>
-
-    <a class="question-link" href="https://pelld.github.io/where-is-the-art/" data-index="4" data-group="explore" data-colour="#ff9472" data-mark="ART" data-project-title="Where Is the Art?" data-description="Search by artist or place to discover where artworks are held and what can be seen nearby." style="--x:7%;--y:67%;--size:40px;--width:390px;--delay:.28s">
-      <span class="question-number">05</span><span class="question-text">Where can you see the art?</span><span class="question-arrow">↗</span>
-    </a>
-
-    <a class="question-link" href="https://pelld.github.io/population-health-atlas/" data-index="5" data-group="explore" data-colour="#78b9ef" data-mark="MAP" data-project-title="Population Health Atlas" data-description="Investigate geographic patterns in recorded long-term conditions and deprivation-adjusted variation." style="--x:69%;--y:54%;--size:28px;--width:300px;--delay:.34s">
-      <span class="question-number">06</span><span class="question-text">What does place reveal?</span><span class="question-arrow">↗</span>
-    </a>
-
-    <a class="question-link" href="https://pelld.github.io/quiz-duel-stars/" data-index="6" data-group="play" data-colour="#f2d565" data-mark="VS" data-project-title="Quiz Duel Stars" data-description="A fast head-to-head quiz played simultaneously across two phones in different locations." style="--x:41%;--y:75%;--size:31px;--width:320px;--delay:.4s">
-      <span class="question-number">07</span><span class="question-text">Can two people play apart?</span><span class="question-arrow">↗</span>
-    </a>
-
-    <a class="question-link" href="https://pelld.github.io/amelia-nepal-game/" data-index="7" data-group="play" data-colour="#86d9c8" data-mark="↑" data-project-title="Amelia in Nepal" data-description="A personalised mountain journey built as a playable web adventure." style="--x:73%;--y:75%;--size:26px;--width:285px;--delay:.46s">
-      <span class="question-number">08</span><span class="question-text">Can a website become an adventure?</span><span class="question-arrow">↗</span>
-    </a>
-  </nav>
-
-  <!-- ============================================================
-       03. ACTIVE PROJECT READOUT
-       A single restrained strip replaces all project cards.
-       ============================================================ -->
-  <div class="project-readout" id="project-readout" aria-live="polite">
-    <span class="readout-index" id="readout-index">00</span>
-    <strong id="readout-title">Move through the questions</strong>
-    <p id="readout-description">The links react, reveal their relationships and open the project directly.</p>
-    <span class="readout-action" id="readout-action">Select a question</span>
-  </div>
-
-  <div class="stage-tools" aria-label="Homepage tools">
-    <button type="button" data-directory-open>All projects <span>⌘ K</span></button>
-    <a href="{{ site.baseurl }}/blog/">R blog archive ↗</a>
-  </div>
 </main>
 
 <!-- ============================================================
-     04. AUTOMATIC ALL-PROJECTS DRAWER
+     02. SEARCHABLE AUTOMATIC PROJECT DRAWER
      ============================================================ -->
 <div class="directory-drawer-layer" id="directory-drawer-layer" aria-hidden="true">
-  <button type="button" class="directory-scrim" data-directory-close aria-label="Close all projects"></button>
+  <button type="button" class="directory-scrim" data-directory-close aria-label="Close project index"></button>
   <aside class="directory-drawer" role="dialog" aria-modal="true" aria-labelledby="directory-title">
-    <header class="directory-drawer-header"><div><p>Public GitHub Pages sites</p><h2 id="directory-title">All projects</h2></div><button type="button" class="directory-close" data-directory-close aria-label="Close all projects">×</button></header>
+    <header class="directory-drawer-header"><div><p>All public sites</p><h2 id="directory-title">Project index</h2></div><button type="button" class="directory-close" data-directory-close aria-label="Close project index">×</button></header>
     <label class="directory-search-label" for="directory-search">Search projects</label>
     <input id="directory-search" class="directory-search" type="search" placeholder="Search by name or type" autocomplete="off">
     <div id="site-directory" class="directory-list" aria-live="polite"><p class="directory-loading">Looking for published sites…</p></div>
-    <p class="directory-drawer-note">Generated automatically from public GitHub Pages repositories.</p>
+    <div class="directory-archive-link"><span>Older work</span><a href="{{ site.baseurl }}/blog/">Browse the R blog archive ↗</a></div>
   </aside>
 </div>
 
