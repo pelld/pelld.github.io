@@ -15,6 +15,7 @@ const DIRECTORY_CONFIG = {
     { name: "population-health-size-of-prize", description: "Explore the potential impact of population health interventions." },
     { name: "population-health-atlas", description: "Explore geographic clustering in recorded condition prevalence." },
     { name: "p-value-explorer", description: "Inspect p-values reported in PubMed abstracts." },
+    { name: "patient-flow-explorer", description: "Explore evidence about changes to health services and their reported outcomes." },
     { name: "quiz-duel-stars", description: "A head-to-head quiz played across two devices." },
     { name: "amelia-nepal-game", description: "A personalised mountain adventure." },
     { name: "hunter-dirt-bike-adventure", description: "Ride and perform tricks across the North Pennines." },
@@ -29,6 +30,7 @@ const DISPLAY_NAMES = {
   "population-health-size-of-prize": "Population Health: Size of the Prize",
   "population-health-atlas": "Population Health Atlas",
   "p-value-explorer": "P-Value Explorer",
+  "patient-flow-explorer": "Health System Levers",
   "quiz-duel-stars": "Quiz Duel Stars",
   "amelia-nepal-game": "Amelia in Nepal",
   "hunter-dirt-bike-adventure": "Hunter's Dirt Bike Adventure",
@@ -50,7 +52,7 @@ function categoryFromRepository(repository) {
   const topics = repository.topics || [];
   if (topics.includes("game") || /game|dash|quiz/.test(repository.name)) return "Game";
   if (topics.includes("population-health") || repository.name.startsWith("population-health-")) return "Population health";
-  if (topics.includes("evidence") || /p-value|evidence/.test(repository.name)) return "Evidence";
+  if (topics.includes("evidence") || /p-value|patient-flow|evidence/.test(repository.name)) return "Evidence";
   if (topics.includes("tool")) return "Tool";
   return "Web project";
 }
