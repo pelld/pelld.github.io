@@ -67,6 +67,7 @@ function pagesUrl(repository) {
 
 function renderDirectory(repositories) {
   const container = document.getElementById("site-directory");
+  if (!container) return;
   container.replaceChildren();
 
   repositories.forEach(repository => {
@@ -78,17 +79,54 @@ function renderDirectory(repositories) {
 
     card.className = "directory-card";
     card.href = pagesUrl(repository);
+    card.dataset.search = `${titleFromRepository(repository.name)} ${categoryFromRepository(repository)} ${repository.description || ""}`.toLowerCase();
     category.textContent = categoryFromRepository(repository);
     title.textContent = titleFromRepository(repository.name);
     description.textContent = repository.description || "A public GitHub Pages project.";
-    link.textContent = "Open site ↗";
+    link.textContent = "Open site";
     card.append(category, title, description, link);
     container.append(card);
   });
 }
 
 /* ============================================================
-   03. GITHUB DISCOVERY WITH STATIC FALLBACK
+   03. DRAWER INTERACTION
+   ============================================================ */
+
+function initialiseDirectoryDrawer() {
+  const layer = document.getElementById("directory-drawer-layer");
+  const search = document.getElementById("directory-search");
+  const openButtons = [...document.querySelectorAll("[data-directory-open]")];
+  const closeButtons = [...document.querySelectorAll("[data-directory-close]")];
+  if (!layer || openButtons.length === 0) return;
+
+  let lastFocusedElement = null;
+
+  const openDrawer = () => {
+    lastFocusedElement = document.activeElement;
+    document.body.classList.add("directory-open");
+    layer.setAttribute("aria-hidden", "false");
+    window.setTimeout(() => search?.focus(), 40);
+  };
+
+  const closeDrawer = () => {
+    document.body.classList.remove("directory-open");
+    layer.setAttribute("aria-hidden", "true");
+    if (lastFocusedElement instanceof HTMLElement) lastFocusedElement.focus();
+  };
+
+  openButtons.forEach(button => button.addEventListener("click", openDrawer));
+  closeButtons.forEach(button => button.addEventListener("click", closeDrawer));
+  document.addEventListener("keydown", event => { if (event.key === "Escape" && document.body.classList.contains("directory-open")) closeDrawer(); });
+
+  search?.addEventListener("input", () => {
+    const query = search.value.trim().toLowerCase();
+    document.querySelectorAll("#site-directory .directory-card").forEach(card => { card.hidden = query.length > 0 && !card.dataset.search.includes(query); });
+  });
+}
+
+/* ============================================================
+   04. GITHUB DISCOVERY WITH STATIC FALLBACK
    The fallback ensures the directory remains useful if GitHub's
    public API is temporarily unavailable or rate-limited.
    ============================================================ */
@@ -107,4 +145,5 @@ async function loadDirectory() {
   }
 }
 
+initialiseDirectoryDrawer();
 loadDirectory();

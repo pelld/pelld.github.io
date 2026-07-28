@@ -15,11 +15,10 @@ title: Projects
 
     <div class="universe-shell shell">
       <div class="universe-copy">
-        <p class="universe-kicker"><span></span> Independent web projects · Move to explore</p>
+        <p class="universe-kicker"><span></span> Independent web projects</p>
         <h1 id="universe-title">Things built to<br><em>understand things.</em></h1>
-        <p class="universe-intro">Maps, games, evidence tools and experiments. Each one starts with a question and follows it further than a normal webpage usually would.</p>
-        <div class="universe-actions"><a class="universe-button" href="#projects">Enter the collection <span>↓</span></a><a class="universe-text-link" href="#directory">See everything <span>↗</span></a></div>
-        <div class="universe-themes" aria-label="Project themes"><span>Systems</span><span>Evidence</span><span>Maps</span><span>Games</span></div>
+        <p class="universe-intro">Maps, games, evidence tools and experiments. Each starts with a question and follows it further than a normal webpage usually would.</p>
+        <div class="universe-actions"><a class="universe-button" href="#projects">Explore the collection <span>↓</span></a><button type="button" class="universe-text-link" data-directory-open>All projects <span>↗</span></button></div>
       </div>
 
       <aside class="universe-panel" id="universe-panel" aria-live="polite">
@@ -41,9 +40,6 @@ title: Projects
         </div>
       </aside>
     </div>
-
-    <div class="universe-instruction" aria-hidden="true"><span class="universe-mouse"></span><p><strong>Move through the system</strong><br>Select a project node to bring it forward</p></div>
-    <div class="universe-counter" aria-hidden="true"><span id="universe-active-number">01</span><i></i><span>09</span></div>
   </section>
 
   <!-- ============================================================
@@ -102,19 +98,24 @@ title: Projects
   </section>
 
   <!-- ============================================================
-       05. AUTOMATIC SITE DIRECTORY
-       ============================================================ -->
-  <section class="directory shell" id="directory">
-    <div class="section-title"><div><p class="kicker">All public sites</p><h2>The complete directory.</h2></div><p>This list is read from GitHub automatically, so newly published public Pages sites can appear without rebuilding the homepage.</p></div>
-    <div id="site-directory" class="directory-grid" aria-live="polite"><p class="directory-loading">Looking for published sites…</p></div>
-    <p class="directory-note">The curated projects above include fuller descriptions. Login-protected and explicitly hidden projects are excluded from this public directory.</p>
-  </section>
-
-  <!-- ============================================================
-       06. BLOG ARCHIVE
+       05. BLOG ARCHIVE
        ============================================================ -->
   <section class="archive shell" id="archive"><div class="archive-number">2016</div><div class="archive-copy"><p class="kicker">Still here, safely archived</p><h2>Jarb: Just another R blog</h2><p>The original collection of short notes on R, SQL, SAS and coding problems. The blog and all its original posts remain available.</p></div><a class="button button-light" href="{{ site.baseurl }}/blog/">Browse the archive →</a></section>
 </main>
+
+<!-- ============================================================
+     06. ALL-SITES DRAWER
+     ============================================================ -->
+<div class="directory-drawer-layer" id="directory-drawer-layer" aria-hidden="true">
+  <button type="button" class="directory-scrim" data-directory-close aria-label="Close all projects"></button>
+  <aside class="directory-drawer" role="dialog" aria-modal="true" aria-labelledby="directory-title">
+    <header class="directory-drawer-header"><div><p>All public sites</p><h2 id="directory-title">Projects</h2></div><button type="button" class="directory-close" data-directory-close aria-label="Close all projects">×</button></header>
+    <label class="directory-search-label" for="directory-search">Search projects</label>
+    <input id="directory-search" class="directory-search" type="search" placeholder="Search by name or type" autocomplete="off">
+    <div id="site-directory" class="directory-list" aria-live="polite"><p class="directory-loading">Looking for published sites…</p></div>
+    <p class="directory-drawer-note">This list is generated automatically from public GitHub Pages repositories.</p>
+  </aside>
+</div>
 
 <script src="{{ site.baseurl }}/home-universe.js" defer></script>
 <script src="{{ site.baseurl }}/site-directory.js" defer></script>
