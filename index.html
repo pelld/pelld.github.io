@@ -4,20 +4,51 @@ title: Projects
 ---
 
 <main>
-  <section class="hero shell">
-    <div class="hero-copy">
-      <p class="kicker">Independent web projects</p>
-      <h1>Useful things.<br><span>Playful things.</span></h1>
-      <p class="hero-intro">A collection of games, tools and experiments made to solve a problem, explore an idea or simply see if it can be done.</p>
-      <div class="hero-actions"><a class="button button-dark" href="#projects">Explore projects</a><a class="text-link" href="{{ site.baseurl }}/blog/">Visit the old R blog <span>→</span></a></div>
+  <!-- ============================================================
+       01. LIVING PROJECT MAP
+       ============================================================ -->
+  <section class="project-universe" id="top" aria-labelledby="universe-title">
+    <canvas id="universe-canvas" aria-hidden="true"></canvas>
+    <div class="universe-grid" aria-hidden="true"></div>
+    <div class="universe-glow universe-glow-one" aria-hidden="true"></div>
+    <div class="universe-glow universe-glow-two" aria-hidden="true"></div>
+
+    <div class="universe-shell shell">
+      <div class="universe-copy">
+        <p class="universe-kicker"><span></span> Independent web projects · Move to explore</p>
+        <h1 id="universe-title">Things built to<br><em>understand things.</em></h1>
+        <p class="universe-intro">Maps, games, evidence tools and experiments. Each one starts with a question and follows it further than a normal webpage usually would.</p>
+        <div class="universe-actions"><a class="universe-button" href="#projects">Enter the collection <span>↓</span></a><a class="universe-text-link" href="#directory">See everything <span>↗</span></a></div>
+        <div class="universe-themes" aria-label="Project themes"><span>Systems</span><span>Evidence</span><span>Maps</span><span>Games</span></div>
+      </div>
+
+      <aside class="universe-panel" id="universe-panel" aria-live="polite">
+        <div class="universe-panel-top"><span class="universe-panel-index" id="universe-panel-index">01 / 09</span><span class="universe-panel-type" id="universe-panel-type">Interactive systems map</span></div>
+        <h2 id="universe-panel-title">Population Health: The Whole System</h2>
+        <p id="universe-panel-description">Follow the relationships between wider determinants, prevention, treatment and recovery—and keep asking why.</p>
+        <div class="universe-panel-actions"><a id="universe-panel-link" href="https://pelld.github.io/population-health-system-explorer/">Open project <span>↗</span></a>
+          <div class="universe-accessible-list" aria-label="Select a featured project">
+            <button type="button" data-project="0">Population Health: The Whole System</button>
+            <button type="button" data-project="1">Population Health: Size of the Prize</button>
+            <button type="button" data-project="2">Population Health Atlas</button>
+            <button type="button" data-project="3">P-Value Explorer</button>
+            <button type="button" data-project="4">Where Is the Art?</button>
+            <button type="button" data-project="5">Quiz Duel Stars</button>
+            <button type="button" data-project="6">Amelia in Nepal</button>
+            <button type="button" data-project="7">Hunter's Dirt Bike Adventure</button>
+            <button type="button" data-project="8">Animal Dash</button>
+          </div>
+        </div>
+      </aside>
     </div>
-    <div class="hero-graphic" aria-hidden="true">
-      <div class="orbit orbit-one"></div><div class="orbit orbit-two"></div>
-      <div class="shape shape-purple">?</div><div class="shape shape-green">↗</div><div class="shape shape-orange">✦</div>
-      <div class="graphic-card"><span>Currently exploring</span><strong>art · maps · games</strong></div>
-    </div>
+
+    <div class="universe-instruction" aria-hidden="true"><span class="universe-mouse"></span><p><strong>Move through the system</strong><br>Select a project node to bring it forward</p></div>
+    <div class="universe-counter" aria-hidden="true"><span id="universe-active-number">01</span><i></i><span>09</span></div>
   </section>
 
+  <!-- ============================================================
+       02. FEATURED PROJECT
+       ============================================================ -->
   <section class="work shell" id="projects">
     <div class="section-title"><div><p class="kicker">Featured project</p><h2>Find art anywhere.</h2></div><p>Search by artist to discover where their work is held, or start with a place to see what is nearby.</p></div>
     <a class="feature-card" href="https://pelld.github.io/where-is-the-art/">
@@ -27,7 +58,7 @@ title: Projects
   </section>
 
   <!-- ============================================================
-       02. HEALTH, EVIDENCE AND SYSTEMS
+       03. HEALTH, EVIDENCE AND SYSTEMS
        ============================================================ -->
   <section class="insights-section" id="insights">
     <div class="shell">
@@ -55,7 +86,7 @@ title: Projects
   </section>
 
   <!-- ============================================================
-       03. BURTREE GAMING STUDIOS
+       04. BURTREE GAMING STUDIOS
        ============================================================ -->
   <section class="games-section" id="games">
     <div class="shell">
@@ -71,7 +102,7 @@ title: Projects
   </section>
 
   <!-- ============================================================
-       04. AUTOMATIC SITE DIRECTORY
+       05. AUTOMATIC SITE DIRECTORY
        ============================================================ -->
   <section class="directory shell" id="directory">
     <div class="section-title"><div><p class="kicker">All public sites</p><h2>The complete directory.</h2></div><p>This list is read from GitHub automatically, so newly published public Pages sites can appear without rebuilding the homepage.</p></div>
@@ -80,9 +111,10 @@ title: Projects
   </section>
 
   <!-- ============================================================
-       05. BLOG ARCHIVE
+       06. BLOG ARCHIVE
        ============================================================ -->
   <section class="archive shell" id="archive"><div class="archive-number">2016</div><div class="archive-copy"><p class="kicker">Still here, safely archived</p><h2>Jarb: Just another R blog</h2><p>The original collection of short notes on R, SQL, SAS and coding problems. The blog and all its original posts remain available.</p></div><a class="button button-light" href="{{ site.baseurl }}/blog/">Browse the archive →</a></section>
 </main>
 
+<script src="{{ site.baseurl }}/home-universe.js" defer></script>
 <script src="{{ site.baseurl }}/site-directory.js" defer></script>
