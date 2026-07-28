@@ -10,6 +10,7 @@ const DIRECTORY_CONFIG = {
   excludedRepositories: ["our-days"],
   apiUrl: "https://api.github.com/users/pelld/repos?per_page=100&sort=updated",
   fallbackRepositories: [
+    { name: "patient-flow-explorer", description: "Explore patient pathways, demand, delay and capacity." },
     { name: "where-is-the-art", description: "Find artworks and museums by artist or location." },
     { name: "population-health-system-explorer", description: "Explore relationships across the population health system." },
     { name: "population-health-size-of-prize", description: "Explore the potential impact of population health interventions." },
@@ -24,6 +25,7 @@ const DIRECTORY_CONFIG = {
 };
 
 const DISPLAY_NAMES = {
+  "patient-flow-explorer": "Patient Flow Explorer",
   "where-is-the-art": "Where Is the Art?",
   "population-health-system-explorer": "Population Health: The Whole System",
   "population-health-size-of-prize": "Population Health: Size of the Prize",
@@ -49,7 +51,7 @@ function titleFromRepository(name) {
 function categoryFromRepository(repository) {
   const topics = repository.topics || [];
   if (topics.includes("game") || /game|dash|quiz/.test(repository.name)) return "Game";
-  if (topics.includes("population-health") || repository.name.startsWith("population-health-")) return "Population health";
+  if (topics.includes("population-health") || repository.name.startsWith("population-health-") || repository.name === "patient-flow-explorer") return "Population health";
   if (topics.includes("evidence") || /p-value|evidence/.test(repository.name)) return "Evidence";
   if (topics.includes("tool")) return "Tool";
   return "Web project";

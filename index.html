@@ -3,117 +3,97 @@ layout: home
 title: Projects
 ---
 
-<main>
-  <!-- ============================================================
-       01. LIVING PROJECT MAP
-       ============================================================ -->
-  <section class="project-universe" id="top" aria-labelledby="universe-title">
-    <canvas id="universe-canvas" aria-hidden="true"></canvas>
-    <div class="universe-grid" aria-hidden="true"></div>
-    <div class="universe-glow universe-glow-one" aria-hidden="true"></div>
-    <div class="universe-glow universe-glow-two" aria-hidden="true"></div>
+<!-- ============================================================
+     01. INTERACTIVE QUESTION FIELD
+     Every visible question is a real hyperlink. JavaScript adds
+     motion, relationships and previews but is not needed to navigate.
+     ============================================================ -->
+<main class="question-stage" id="question-stage">
+  <div class="stage-light" aria-hidden="true"></div>
+  <div class="stage-grid" aria-hidden="true"></div>
+  <div class="stage-grain" aria-hidden="true"></div>
+  <div class="stage-mark" id="stage-mark" aria-hidden="true">?</div>
 
-    <div class="universe-shell shell">
-      <div class="universe-copy">
-        <p class="universe-kicker"><span></span> Independent web projects</p>
-        <h1 id="universe-title">Things built to<br><em>understand things.</em></h1>
-        <p class="universe-intro">Maps, games, evidence tools and experiments. Each starts with a question and follows it further than a normal webpage usually would.</p>
-        <div class="universe-actions"><a class="universe-button" href="#projects">Explore the collection <span>↓</span></a><button type="button" class="universe-text-link" data-directory-open>All projects <span>↗</span></button></div>
-      </div>
+  <svg class="question-lines" id="question-lines" aria-hidden="true">
+    <g id="question-line-group"></g>
+  </svg>
 
-      <aside class="universe-panel" id="universe-panel" aria-live="polite">
-        <div class="universe-panel-top"><span class="universe-panel-index" id="universe-panel-index">01 / 09</span><span class="universe-panel-type" id="universe-panel-type">Interactive systems map</span></div>
-        <h2 id="universe-panel-title">Population Health: The Whole System</h2>
-        <p id="universe-panel-description">Follow the relationships between wider determinants, prevention, treatment and recovery—and keep asking why.</p>
-        <div class="universe-panel-actions"><a id="universe-panel-link" href="https://pelld.github.io/population-health-system-explorer/">Open project <span>↗</span></a>
-          <div class="universe-accessible-list" aria-label="Select a featured project">
-            <button type="button" data-project="0">Population Health: The Whole System</button>
-            <button type="button" data-project="1">Population Health: Size of the Prize</button>
-            <button type="button" data-project="2">Population Health Atlas</button>
-            <button type="button" data-project="3">P-Value Explorer</button>
-            <button type="button" data-project="4">Where Is the Art?</button>
-            <button type="button" data-project="5">Quiz Duel Stars</button>
-            <button type="button" data-project="6">Amelia in Nepal</button>
-            <button type="button" data-project="7">Hunter's Dirt Bike Adventure</button>
-            <button type="button" data-project="8">Animal Dash</button>
-          </div>
-        </div>
-      </aside>
+  <section class="stage-intro" aria-labelledby="stage-title">
+    <p><span></span> Independent web experiments</p>
+    <h1 id="stage-title">Choose a question.</h1>
+    <div class="stage-intro-row">
+      <span>Each question is a project.</span>
+      <span>Click to open it.</span>
     </div>
   </section>
 
   <!-- ============================================================
-       02. FEATURED PROJECT
+       02. DIRECT PROJECT LINKS
+       Position, scale and colour are deliberately stored with each
+       project so this remains straightforward to edit later.
        ============================================================ -->
-  <section class="work shell" id="projects">
-    <div class="section-title"><div><p class="kicker">Featured project</p><h2>Find art anywhere.</h2></div><p>Search by artist to discover where their work is held, or start with a place to see what is nearby.</p></div>
-    <a class="feature-card" href="https://pelld.github.io/where-is-the-art/">
-      <div class="feature-copy"><span class="pill">Interactive art explorer</span><h3>Where Is the Art?</h3><p>From Rembrandt to Michelangelo: explore artworks, museums and locations on one map.</p><span class="open-link">Open the project <b>↗</b></span></div>
-      <div class="map-art" aria-hidden="true"><div class="land land-one"></div><div class="land land-two"></div><i class="pin pin-one"></i><i class="pin pin-two"></i><i class="pin pin-three"></i><div class="map-panel"><span>Artist</span><strong>Rembrandt</strong><small>Works across Europe</small></div></div>
+  <nav class="question-field" id="question-field" aria-label="Featured projects">
+    <a class="question-link" href="https://pelld.github.io/population-health-system-explorer/" data-index="0" data-group="analyse" data-colour="#72dfbd" data-mark="SYSTEM" data-project-title="Population Health: The Whole System" data-description="Explore the relationships between wider determinants, prevention, treatment and recovery." style="--x:6%;--y:28%;--size:42px;--width:390px;--delay:.04s">
+      <span class="question-number">01</span><span class="question-text">What shapes population health?</span><span class="question-arrow">↗</span>
     </a>
-  </section>
+
+    <a class="question-link" href="https://pelld.github.io/population-health-size-of-prize/" data-index="1" data-group="analyse" data-colour="#d7ef72" data-mark="£→?" data-project-title="Population Health: Size of the Prize" data-description="Compare the potential health, financial and societal impact of population health interventions." style="--x:43%;--y:23%;--size:29px;--width:350px;--delay:.1s">
+      <span class="question-number">02</span><span class="question-text">Where is the biggest opportunity?</span><span class="question-arrow">↗</span>
+    </a>
+
+    <a class="question-link" href="https://pelld.github.io/patient-flow-explorer/" data-index="2" data-group="analyse" data-colour="#75d4f2" data-mark="FLOW" data-project-title="Patient Flow Explorer" data-description="Follow a patient pathway and investigate where demand, delay and capacity interact." style="--x:71%;--y:31%;--size:27px;--width:285px;--delay:.16s">
+      <span class="question-number">03</span><span class="question-text">Where does the patient journey break?</span><span class="question-arrow">↗</span>
+    </a>
+
+    <a class="question-link" href="https://pelld.github.io/p-value-explorer/" data-index="3" data-group="analyse" data-colour="#a98cf2" data-mark="p=.05" data-project-title="P-Value Explorer" data-description="Search PubMed abstracts and inspect the distribution of reported p-values around the 0.05 threshold." style="--x:36%;--y:49%;--size:33px;--width:365px;--delay:.22s">
+      <span class="question-number">04</span><span class="question-text">What hides around p = .05?</span><span class="question-arrow">↗</span>
+    </a>
+
+    <a class="question-link" href="https://pelld.github.io/where-is-the-art/" data-index="4" data-group="explore" data-colour="#ff9472" data-mark="ART" data-project-title="Where Is the Art?" data-description="Search by artist or place to discover where artworks are held and what can be seen nearby." style="--x:7%;--y:67%;--size:40px;--width:390px;--delay:.28s">
+      <span class="question-number">05</span><span class="question-text">Where can you see the art?</span><span class="question-arrow">↗</span>
+    </a>
+
+    <a class="question-link" href="https://pelld.github.io/population-health-atlas/" data-index="5" data-group="explore" data-colour="#78b9ef" data-mark="MAP" data-project-title="Population Health Atlas" data-description="Investigate geographic patterns in recorded long-term conditions and deprivation-adjusted variation." style="--x:69%;--y:54%;--size:28px;--width:300px;--delay:.34s">
+      <span class="question-number">06</span><span class="question-text">What does place reveal?</span><span class="question-arrow">↗</span>
+    </a>
+
+    <a class="question-link" href="https://pelld.github.io/quiz-duel-stars/" data-index="6" data-group="play" data-colour="#f2d565" data-mark="VS" data-project-title="Quiz Duel Stars" data-description="A fast head-to-head quiz played simultaneously across two phones in different locations." style="--x:41%;--y:75%;--size:31px;--width:320px;--delay:.4s">
+      <span class="question-number">07</span><span class="question-text">Can two people play apart?</span><span class="question-arrow">↗</span>
+    </a>
+
+    <a class="question-link" href="https://pelld.github.io/amelia-nepal-game/" data-index="7" data-group="play" data-colour="#86d9c8" data-mark="↑" data-project-title="Amelia in Nepal" data-description="A personalised mountain journey built as a playable web adventure." style="--x:73%;--y:75%;--size:26px;--width:285px;--delay:.46s">
+      <span class="question-number">08</span><span class="question-text">Can a website become an adventure?</span><span class="question-arrow">↗</span>
+    </a>
+  </nav>
 
   <!-- ============================================================
-       03. HEALTH, EVIDENCE AND SYSTEMS
+       03. ACTIVE PROJECT READOUT
+       A single restrained strip replaces all project cards.
        ============================================================ -->
-  <section class="insights-section" id="insights">
-    <div class="shell">
-      <div class="section-title"><div><p class="kicker">Health, evidence and systems</p><h2>Explore the difficult questions.</h2></div><p>Interactive prototypes for investigating population health, evidence and the consequences of decisions across complex systems.</p></div>
-      <div class="insights-grid">
-        <a class="insight-card insight-system" href="https://pelld.github.io/population-health-system-explorer/">
-          <div class="insight-visual system-visual" aria-hidden="true"><span class="system-node node-a"></span><span class="system-node node-b"></span><span class="system-node node-c"></span><span class="system-node node-d"></span><i class="system-line line-a"></i><i class="system-line line-b"></i><i class="system-line line-c"></i></div>
-          <div class="insight-copy"><span class="project-status">Interactive systems map · Prototype</span><h3>Population Health: The Whole System</h3><p>Follow the relationships between wider determinants, prevention, treatment, recovery and longer lives—and keep asking why.</p><b>Explore the system ↗</b></div>
-        </a>
-        <a class="insight-card insight-prize" href="https://pelld.github.io/population-health-size-of-prize/">
-          <div class="insight-visual prize-visual" aria-hidden="true"><span class="body-head"></span><span class="body-core"></span><i class="body-point point-a"></i><i class="body-point point-b"></i><i class="body-point point-c"></i><strong>£1 → ?</strong></div>
-          <div class="insight-copy"><span class="project-status">Decision support · Illustrative prototype</span><h3>Population Health: Size of the Prize</h3><p>Explore how interventions affect the whole person and compare health, financial and societal returns.</p><b>Explore the opportunity ↗</b></div>
-        </a>
-        <a class="insight-card insight-atlas" href="https://pelld.github.io/population-health-atlas/">
-          <div class="insight-visual atlas-visual" aria-hidden="true"><div class="atlas-map"></div><i class="atlas-dot dot-a"></i><i class="atlas-dot dot-b"></i><i class="atlas-dot dot-c"></i><span>QOF</span></div>
-          <div class="insight-copy"><span class="project-status">Geographic analysis · Demonstration data</span><h3>Population Health Atlas</h3><p>Investigate where recorded long-term conditions cluster and what remains after adjustment for deprivation.</p><b>Open the atlas ↗</b></div>
-        </a>
-        <a class="insight-card insight-pvalue" href="https://pelld.github.io/p-value-explorer/">
-          <div class="insight-visual pvalue-visual" aria-hidden="true"><i style="--h:34%"></i><i style="--h:58%"></i><i style="--h:82%"></i><i style="--h:48%"></i><i class="threshold" style="--h:92%"></i><i style="--h:28%"></i><span>p = .05</span></div>
-          <div class="insight-copy"><span class="project-status">PubMed evidence explorer</span><h3>P-Value Explorer</h3><p>Search PubMed abstracts, extract reported p-values and inspect their distribution around the 0.05 threshold.</p><b>Explore the evidence ↗</b></div>
-        </a>
-      </div>
-      <p class="prototype-note"><strong>About the prototypes:</strong> several projects currently use illustrative or demonstration data to develop the design and analytical approach. Each site explains what its results can—and cannot—show.</p>
-    </div>
-  </section>
+  <div class="project-readout" id="project-readout" aria-live="polite">
+    <span class="readout-index" id="readout-index">00</span>
+    <strong id="readout-title">Move through the questions</strong>
+    <p id="readout-description">The links react, reveal their relationships and open the project directly.</p>
+    <span class="readout-action" id="readout-action">Select a question</span>
+  </div>
 
-  <!-- ============================================================
-       04. BURTREE GAMING STUDIOS
-       ============================================================ -->
-  <section class="games-section" id="games">
-    <div class="shell">
-      <div class="section-title light"><div><p class="kicker">Burtree Gaming Studios</p><h2>Made to be played.</h2></div><p>Small, phone-friendly games built for family, friends and two-player challenges.</p></div>
-      <div class="games-grid">
-        <a class="game-card game-quiz" href="https://pelld.github.io/quiz-duel-stars/"><div class="game-visual"><span class="quiz-bubble">?</span><span class="quiz-bubble second">!</span></div><div class="game-copy"><span>Quiz · Two devices</span><h3>Quiz Duel Stars</h3><p>Fast head-to-head trivia, played together from different phones.</p><b>Play now ↗</b></div></a>
-        <a class="game-card game-nepal" href="https://pelld.github.io/amelia-nepal-game/"><div class="game-visual"><div class="mountain back"></div><div class="mountain front"></div><span class="sun"></span></div><div class="game-copy"><span>Personal adventure</span><h3>Amelia in Nepal</h3><p>A journey through the mountains, made as a personalised game.</p><b>Play now ↗</b></div></a>
-        <a class="game-card game-bike" href="https://pelld.github.io/hunter-dirt-bike-adventure/"><div class="game-visual"><div class="trail"></div><span class="wheel wheel-one"></span><span class="wheel wheel-two"></span><span class="rider">↗</span></div><div class="game-copy"><span>Action · Tricks</span><h3>Hunter's Dirt Bike Adventure</h3><p>Ride, jump and perform tricks across the North Pennines.</p><b>Play now ↗</b></div></a>
-        <a class="game-card game-dash" href="https://pelld.github.io/dirt-bike-dash/"><div class="game-visual speed-lines"><strong>GO!</strong></div><div class="game-copy"><span>Race · Two player</span><h3>Dirt Bike Dash</h3><p>A quick dirt-bike challenge made for racing a friend.</p><b>Play now ↗</b></div></a>
-        <a class="game-card game-animal" href="https://pelld.github.io/animal-dash/"><div class="game-visual animal-faces"><span>●ᴥ●</span><span>•ᴥ•</span><span>●ᴥ●</span></div><div class="game-copy"><span>Arcade · Younger players</span><h3>Animal Dash</h3><p>A bright and simple action game for quick bursts of play.</p><b>Play now ↗</b></div></a>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============================================================
-       05. BLOG ARCHIVE
-       ============================================================ -->
-  <section class="archive shell" id="archive"><div class="archive-number">2016</div><div class="archive-copy"><p class="kicker">Still here, safely archived</p><h2>Jarb: Just another R blog</h2><p>The original collection of short notes on R, SQL, SAS and coding problems. The blog and all its original posts remain available.</p></div><a class="button button-light" href="{{ site.baseurl }}/blog/">Browse the archive →</a></section>
+  <div class="stage-tools" aria-label="Homepage tools">
+    <button type="button" data-directory-open>All projects <span>⌘ K</span></button>
+    <a href="{{ site.baseurl }}/blog/">R blog archive ↗</a>
+  </div>
 </main>
 
 <!-- ============================================================
-     06. ALL-SITES DRAWER
+     04. AUTOMATIC ALL-PROJECTS DRAWER
      ============================================================ -->
 <div class="directory-drawer-layer" id="directory-drawer-layer" aria-hidden="true">
   <button type="button" class="directory-scrim" data-directory-close aria-label="Close all projects"></button>
   <aside class="directory-drawer" role="dialog" aria-modal="true" aria-labelledby="directory-title">
-    <header class="directory-drawer-header"><div><p>All public sites</p><h2 id="directory-title">Projects</h2></div><button type="button" class="directory-close" data-directory-close aria-label="Close all projects">×</button></header>
+    <header class="directory-drawer-header"><div><p>Public GitHub Pages sites</p><h2 id="directory-title">All projects</h2></div><button type="button" class="directory-close" data-directory-close aria-label="Close all projects">×</button></header>
     <label class="directory-search-label" for="directory-search">Search projects</label>
     <input id="directory-search" class="directory-search" type="search" placeholder="Search by name or type" autocomplete="off">
     <div id="site-directory" class="directory-list" aria-live="polite"><p class="directory-loading">Looking for published sites…</p></div>
-    <p class="directory-drawer-note">This list is generated automatically from public GitHub Pages repositories.</p>
+    <p class="directory-drawer-note">Generated automatically from public GitHub Pages repositories.</p>
   </aside>
 </div>
 

@@ -1,246 +1,229 @@
 /* ============================================================
-   00. PROJECT DATA
+   00. QUESTION-FIELD CONFIGURATION
+   The connections are conceptual relationships between projects.
    ============================================================ */
-const universeProjects = [
-  { title:"Population Health: The Whole System", short:"Whole system", type:"Interactive systems map", description:"Follow the relationships between wider determinants, prevention, treatment and recovery—and keep asking why.", url:"https://pelld.github.io/population-health-system-explorer/", colour:"#71e2bd", x:.66, y:.22, radius:28 },
-  { title:"Population Health: Size of the Prize", short:"Size of the prize", type:"Decision support prototype", description:"Explore how interventions affect the whole person and compare health, financial and societal returns.", url:"https://pelld.github.io/population-health-size-of-prize/", colour:"#d9f279", x:.9, y:.31, radius:25 },
-  { title:"Population Health Atlas", short:"Health atlas", type:"Geographic analysis", description:"Investigate where recorded long-term conditions cluster and what remains after adjustment for deprivation.", url:"https://pelld.github.io/population-health-atlas/", colour:"#78b9ef", x:.76, y:.52, radius:27 },
-  { title:"P-Value Explorer", short:"P-value explorer", type:"PubMed evidence explorer", description:"Search abstracts, extract reported p-values and inspect their distribution around the 0.05 threshold.", url:"https://pelld.github.io/p-value-explorer/", colour:"#aa8df4", x:.94, y:.61, radius:23 },
-  { title:"Where Is the Art?", short:"Where is the art?", type:"Interactive art map", description:"Search by artist or place to discover where artworks are held and what can be seen nearby.", url:"https://pelld.github.io/where-is-the-art/", colour:"#ff9775", x:.62, y:.65, radius:31 },
-  { title:"Quiz Duel Stars", short:"Quiz duel", type:"Two-device game", description:"Fast head-to-head trivia played together from different phones and different locations.", url:"https://pelld.github.io/quiz-duel-stars/", colour:"#f3d864", x:.49, y:.46, radius:24 },
-  { title:"Amelia in Nepal", short:"Amelia in Nepal", type:"Personal adventure", description:"A personalised journey through the mountains, built as a playable web adventure.", url:"https://pelld.github.io/amelia-nepal-game/", colour:"#80d9c8", x:.48, y:.2, radius:22 },
-  { title:"Hunter's Dirt Bike Adventure", short:"Dirt bike adventure", type:"Action game", description:"Ride, jump and perform tricks across a game-world inspired by the North Pennines.", url:"https://pelld.github.io/hunter-dirt-bike-adventure/", colour:"#eeb06f", x:.4, y:.67, radius:25 },
-  { title:"Animal Dash", short:"Animal dash", type:"Arcade game", description:"A bright and simple action game designed for younger players and quick bursts of play.", url:"https://pelld.github.io/animal-dash/", colour:"#ef8db3", x:.31, y:.35, radius:21 }
-];
-
-const universeConnections = [[0,1],[0,2],[0,4],[0,6],[1,2],[1,3],[2,3],[2,4],[4,6],[5,6],[5,7],[5,8],[7,8]];
+const QUESTION_CONNECTIONS = [[0,1],[0,2],[0,3],[0,5],[1,2],[1,3],[2,5],[3,5],[4,5],[4,7],[6,7]];
 
 /* ============================================================
-   01. INITIALISE THE CANVAS AND INTERFACE
+   01. INITIALISE THE INTERACTIVE FIELD
    ============================================================ */
 (() => {
-  const canvas = document.getElementById("universe-canvas");
-  const universe = document.querySelector(".project-universe");
-  if (!canvas || !universe) return;
-
-  const context = canvas.getContext("2d");
-  const panelIndex = document.getElementById("universe-panel-index");
-  const panelType = document.getElementById("universe-panel-type");
-  const panelTitle = document.getElementById("universe-panel-title");
-  const panelDescription = document.getElementById("universe-panel-description");
-  const panelLink = document.getElementById("universe-panel-link");
-  const accessibleButtons = [...document.querySelectorAll(".universe-accessible-list button")];
+  const stage = document.getElementById("question-stage");
+  const field = document.getElementById("question-field");
+  const svg = document.getElementById("question-lines");
+  const lineGroup = document.getElementById("question-line-group");
+  const links = [...document.querySelectorAll(".question-link")];
+  const filterButtons = [...document.querySelectorAll("[data-project-filter]")];
+  const mark = document.getElementById("stage-mark");
+  const readoutIndex = document.getElementById("readout-index");
+  const readoutTitle = document.getElementById("readout-title");
+  const readoutDescription = document.getElementById("readout-description");
+  const readoutAction = document.getElementById("readout-action");
   const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  let width = 0;
-  let height = 0;
-  let pixelRatio = 1;
-  let selectedProject = 0;
-  let hoverProject = -1;
-  let pointer = { x:-1000, y:-1000, active:false };
-  let scrollProgress = 0;
-  let animationFrame = 0;
-  const startTime = performance.now();
+  if (!stage || !field || !svg || !lineGroup || links.length === 0) return;
 
-  const nodes = universeProjects.map((project, index) => ({ ...project, index, px:0, py:0, displayX:0, displayY:0 }));
+  const SVG_NAMESPACE = "http://www.w3.org/2000/svg";
+  const lineElements = [];
+  let activeLink = null;
+  let lineFrame = 0;
+  let fieldX = 0;
+  let fieldY = 0;
 
   /* ============================================================
-     02. RESIZE AND POSITION NODES
-     Desktop nodes are deliberately constrained to the right so
-     the graphic supports the headline rather than crossing it.
+     02. CREATE AND POSITION RELATIONSHIP LINES
      ============================================================ */
-  const resize = () => {
-    const bounds = universe.getBoundingClientRect();
-    width = Math.max(320, bounds.width);
-    height = Math.max(560, bounds.height);
-    pixelRatio = Math.min(window.devicePixelRatio || 1, 1.75);
-    canvas.width = Math.round(width * pixelRatio);
-    canvas.height = Math.round(height * pixelRatio);
-    canvas.style.width = `${width}px`;
-    canvas.style.height = `${height}px`;
-    context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
-
-    nodes.forEach(node => {
-      const mobile = width < 720;
-      node.px = mobile ? width * (.1 + node.x * .8) : width * (.54 + node.x * .43);
-      node.py = mobile ? height * (.4 + node.y * .45) : height * (.08 + node.y * .76);
-      if (!node.displayX) { node.displayX = node.px; node.displayY = node.py; }
-    });
-  };
-
-  /* ============================================================
-     03. PROJECT SELECTION
-     ============================================================ */
-  const selectProject = (index, pin = false) => {
-    const project = universeProjects[index];
-    if (!project) return;
-    if (pin) selectedProject = index;
-    panelIndex.textContent = `${String(index + 1).padStart(2, "0")} / ${String(universeProjects.length).padStart(2, "0")}`;
-    panelType.textContent = project.type;
-    panelTitle.textContent = project.title;
-    panelDescription.textContent = project.description;
-    panelLink.href = project.url;
-    accessibleButtons.forEach((button, buttonIndex) => button.setAttribute("aria-pressed", buttonIndex === index ? "true" : "false"));
-  };
-
-  accessibleButtons.forEach(button => button.addEventListener("click", () => selectProject(Number(button.dataset.project), true)));
-
-  /* ============================================================
-     04. POINTER, TOUCH AND SCROLL INPUT
-     ============================================================ */
-  const setPointer = event => {
-    const bounds = canvas.getBoundingClientRect();
-    pointer.x = event.clientX - bounds.left;
-    pointer.y = event.clientY - bounds.top;
-    pointer.active = true;
-  };
-
-  canvas.addEventListener("pointermove", setPointer);
-  canvas.addEventListener("pointerleave", () => { pointer.active = false; hoverProject = -1; selectProject(selectedProject); });
-  canvas.addEventListener("pointerdown", event => {
-    setPointer(event);
-    if (hoverProject >= 0) selectProject(hoverProject, true);
+  QUESTION_CONNECTIONS.forEach(([from, to]) => {
+    const line = document.createElementNS(SVG_NAMESPACE, "line");
+    line.dataset.from = String(from);
+    line.dataset.to = String(to);
+    lineGroup.append(line);
+    lineElements.push(line);
   });
 
-  window.addEventListener("scroll", () => {
-    const bounds = universe.getBoundingClientRect();
-    scrollProgress = Math.max(0, Math.min(1, -bounds.top / Math.max(1, bounds.height)));
-  }, { passive:true });
+  const updateLines = () => {
+    lineFrame = 0;
+    const stageBounds = stage.getBoundingClientRect();
 
-  window.addEventListener("resize", resize);
+    lineElements.forEach(line => {
+      const from = links[Number(line.dataset.from)];
+      const to = links[Number(line.dataset.to)];
+      if (!from || !to) return;
 
-  /* ============================================================
-     05. DRAW HELPERS
-     ============================================================ */
-  const hexToRgba = (hex, alpha) => {
-    const value = parseInt(hex.slice(1), 16);
-    return `rgba(${value >> 16}, ${(value >> 8) & 255}, ${value & 255}, ${alpha})`;
+      const fromBounds = from.getBoundingClientRect();
+      const toBounds = to.getBoundingClientRect();
+      line.setAttribute("x1", String(fromBounds.left + fromBounds.width / 2 - stageBounds.left - fieldX));
+      line.setAttribute("y1", String(fromBounds.top + fromBounds.height / 2 - stageBounds.top - fieldY));
+      line.setAttribute("x2", String(toBounds.left + toBounds.width / 2 - stageBounds.left - fieldX));
+      line.setAttribute("y2", String(toBounds.top + toBounds.height / 2 - stageBounds.top - fieldY));
+    });
   };
 
-  const roundedRect = (x, y, w, h, radius) => {
-    const r = Math.min(radius, w / 2, h / 2);
-    context.beginPath();
-    context.moveTo(x + r, y);
-    context.arcTo(x + w, y, x + w, y + h, r);
-    context.arcTo(x + w, y + h, x, y + h, r);
-    context.arcTo(x, y + h, x, y, r);
-    context.arcTo(x, y, x + w, y, r);
-    context.closePath();
+  const scheduleLineUpdate = () => {
+    if (lineFrame) return;
+    lineFrame = requestAnimationFrame(updateLines);
   };
 
   /* ============================================================
-     06. ANIMATION LOOP
+     03. PROJECT ACTIVATION AND READOUT
      ============================================================ */
-  const draw = now => {
-    const elapsed = (now - startTime) / 1000;
-    context.clearRect(0, 0, width, height);
-
-    hoverProject = -1;
-    let closestDistance = Number.POSITIVE_INFINITY;
-
-    nodes.forEach(node => {
-      const driftX = prefersReducedMotion ? 0 : Math.sin(elapsed * .42 + node.index * 1.9) * 6;
-      const driftY = prefersReducedMotion ? 0 : Math.cos(elapsed * .38 + node.index * 1.4) * 5;
-      let targetX = node.px + driftX - scrollProgress * (node.index % 2 ? 14 : -10);
-      let targetY = node.py + driftY - scrollProgress * (14 + node.index);
-
-      if (pointer.active) {
-        const dx = targetX - pointer.x;
-        const dy = targetY - pointer.y;
-        const distance = Math.hypot(dx, dy);
-        if (distance < 150 && distance > 0) {
-          const force = (150 - distance) / 150;
-          targetX += (dx / distance) * force * 20;
-          targetY += (dy / distance) * force * 20;
-        }
-      }
-
-      node.displayX += (targetX - node.displayX) * (prefersReducedMotion ? 1 : .06);
-      node.displayY += (targetY - node.displayY) * (prefersReducedMotion ? 1 : .06);
-
-      if (pointer.active) {
-        const distance = Math.hypot(node.displayX - pointer.x, node.displayY - pointer.y);
-        if (distance < node.radius + 28 && distance < closestDistance) { closestDistance = distance; hoverProject = node.index; }
-      }
+  const relatedIndexes = index => {
+    const related = new Set();
+    QUESTION_CONNECTIONS.forEach(([from, to]) => {
+      if (from === index) related.add(to);
+      if (to === index) related.add(from);
     });
-
-    canvas.style.cursor = hoverProject >= 0 ? "pointer" : "default";
-    if (hoverProject >= 0) selectProject(hoverProject);
-
-    /* Draw restrained connections behind the nodes. */
-    universeConnections.forEach(([fromIndex, toIndex]) => {
-      const from = nodes[fromIndex];
-      const to = nodes[toIndex];
-      const highlighted = [fromIndex, toIndex].includes(hoverProject >= 0 ? hoverProject : selectedProject);
-      const gradient = context.createLinearGradient(from.displayX, from.displayY, to.displayX, to.displayY);
-      gradient.addColorStop(0, hexToRgba(from.colour, highlighted ? .42 : .1));
-      gradient.addColorStop(1, hexToRgba(to.colour, highlighted ? .42 : .1));
-      context.strokeStyle = gradient;
-      context.lineWidth = highlighted ? 1.3 : .65;
-      context.beginPath();
-      context.moveTo(from.displayX, from.displayY);
-      context.lineTo(to.displayX, to.displayY);
-      context.stroke();
-    });
-
-    /* Only the active node receives a label. */
-    nodes.forEach(node => {
-      const activeIndex = hoverProject >= 0 ? hoverProject : selectedProject;
-      const active = node.index === activeIndex;
-      const radius = node.radius * (active ? 1.16 : 1);
-
-      context.strokeStyle = hexToRgba(node.colour, active ? .46 : .09);
-      context.lineWidth = 1;
-      context.beginPath();
-      context.arc(node.displayX, node.displayY, radius + (active ? 16 : 9), 0, Math.PI * 2);
-      context.stroke();
-
-      const glow = context.createRadialGradient(node.displayX, node.displayY, 2, node.displayX, node.displayY, radius * 2.15);
-      glow.addColorStop(0, hexToRgba(node.colour, active ? .52 : .24));
-      glow.addColorStop(1, hexToRgba(node.colour, 0));
-      context.fillStyle = glow;
-      context.beginPath();
-      context.arc(node.displayX, node.displayY, radius * 2.15, 0, Math.PI * 2);
-      context.fill();
-
-      context.fillStyle = node.colour;
-      context.beginPath();
-      context.arc(node.displayX, node.displayY, radius, 0, Math.PI * 2);
-      context.fill();
-
-      context.fillStyle = "rgba(12,13,19,.9)";
-      context.beginPath();
-      context.arc(node.displayX, node.displayY, Math.max(7, radius - 7), 0, Math.PI * 2);
-      context.fill();
-
-      context.fillStyle = node.colour;
-      context.beginPath();
-      context.arc(node.displayX, node.displayY, active ? 6 : 4, 0, Math.PI * 2);
-      context.fill();
-
-      if (active) {
-        context.font = `700 ${width < 720 ? 10 : 11}px "DM Sans", sans-serif`;
-        const textWidth = context.measureText(node.short).width;
-        const labelWidth = textWidth + 20;
-        const labelX = node.displayX - labelWidth / 2;
-        const labelY = node.displayY + radius + 14;
-        roundedRect(labelX, labelY, labelWidth, 25, 12.5);
-        context.fillStyle = "rgba(247,247,242,.94)";
-        context.fill();
-        context.fillStyle = "#171820";
-        context.textAlign = "center";
-        context.textBaseline = "middle";
-        context.fillText(node.short, node.displayX, labelY + 12.5);
-      }
-    });
-
-    if (!prefersReducedMotion) animationFrame = requestAnimationFrame(draw);
+    return related;
   };
 
-  resize();
-  selectProject(0, true);
-  if (prefersReducedMotion) draw(performance.now());
-  else animationFrame = requestAnimationFrame(draw);
+  const activate = link => {
+    if (!link || link.classList.contains("is-filtered")) return;
+    activeLink = link;
+    const index = Number(link.dataset.index);
+    const related = relatedIndexes(index);
+    const colour = link.dataset.colour || "#c8f169";
 
-  window.addEventListener("pagehide", () => cancelAnimationFrame(animationFrame), { once:true });
+    stage.classList.add("has-active");
+    stage.style.setProperty("--accent", colour);
+    links.forEach(candidate => {
+      const candidateIndex = Number(candidate.dataset.index);
+      candidate.classList.toggle("is-active", candidate === link);
+      candidate.classList.toggle("is-related", candidate !== link && related.has(candidateIndex));
+    });
+
+    lineElements.forEach(line => {
+      const from = Number(line.dataset.from);
+      const to = Number(line.dataset.to);
+      line.classList.toggle("is-active", from === index || to === index);
+    });
+
+    if (mark) {
+      mark.textContent = link.dataset.mark || "?";
+      if (!prefersReducedMotion && typeof mark.animate === "function") {
+        mark.animate([{ opacity:0, transform:"scale(.9) rotate(-4deg)" },{ opacity:.17, transform:"scale(1) rotate(-2deg)" }], { duration:340, easing:"cubic-bezier(.2,.8,.2,1)" });
+      }
+    }
+
+    if (readoutIndex) readoutIndex.textContent = String(index + 1).padStart(2, "0");
+    if (readoutTitle) readoutTitle.textContent = link.dataset.projectTitle || link.textContent.trim();
+    if (readoutDescription) readoutDescription.textContent = link.dataset.description || "Open this project.";
+    if (readoutAction) readoutAction.textContent = "Click to open ↗";
+  };
+
+  const reset = () => {
+    activeLink = null;
+    stage.classList.remove("has-active");
+    stage.style.setProperty("--accent", "#c8f169");
+    links.forEach(link => link.classList.remove("is-active","is-related"));
+    lineElements.forEach(line => line.classList.remove("is-active"));
+    if (mark) mark.textContent = "?";
+    if (readoutIndex) readoutIndex.textContent = "00";
+    if (readoutTitle) readoutTitle.textContent = "Move through the questions";
+    if (readoutDescription) readoutDescription.textContent = "The links react, reveal their relationships and open the project directly.";
+    if (readoutAction) readoutAction.textContent = "Select a question";
+  };
+
+  links.forEach(link => {
+    link.addEventListener("pointerenter", () => activate(link));
+    link.addEventListener("focus", () => activate(link));
+    link.addEventListener("blur", () => {
+      window.setTimeout(() => { if (!field.contains(document.activeElement)) reset(); }, 0);
+    });
+  });
+
+  field.addEventListener("pointerleave", reset);
+
+  /* ============================================================
+     04. POINTER LIGHT, PARALLAX AND MAGNETIC LINKS
+     ============================================================ */
+  const clearMagnetism = () => {
+    links.forEach(link => {
+      link.style.setProperty("--mag-x", "0px");
+      link.style.setProperty("--mag-y", "0px");
+    });
+  };
+
+  stage.addEventListener("pointermove", event => {
+    const bounds = stage.getBoundingClientRect();
+    const localX = event.clientX - bounds.left;
+    const localY = event.clientY - bounds.top;
+    stage.style.setProperty("--mx", `${localX}px`);
+    stage.style.setProperty("--my", `${localY}px`);
+
+    if (prefersReducedMotion || window.innerWidth <= 760) return;
+
+    fieldX = ((localX / bounds.width) - .5) * -10;
+    fieldY = ((localY / bounds.height) - .5) * -7;
+    field.style.setProperty("--field-x", `${fieldX}px`);
+    field.style.setProperty("--field-y", `${fieldY}px`);
+    svg.style.transform = `translate3d(${fieldX}px,${fieldY}px,0)`;
+
+    links.forEach(link => {
+      const linkBounds = link.getBoundingClientRect();
+      const centreX = linkBounds.left + linkBounds.width / 2;
+      const centreY = linkBounds.top + linkBounds.height / 2;
+      const deltaX = event.clientX - centreX;
+      const deltaY = event.clientY - centreY;
+      const distance = Math.hypot(deltaX, deltaY);
+      const influence = Math.max(0, 1 - distance / 190);
+      link.style.setProperty("--mag-x", `${deltaX * influence * .055}px`);
+      link.style.setProperty("--mag-y", `${deltaY * influence * .055}px`);
+    });
+
+    scheduleLineUpdate();
+  });
+
+  stage.addEventListener("pointerleave", () => {
+    fieldX = 0;
+    fieldY = 0;
+    field.style.setProperty("--field-x", "0px");
+    field.style.setProperty("--field-y", "0px");
+    svg.style.transform = "translate3d(0,0,0)";
+    clearMagnetism();
+    scheduleLineUpdate();
+  });
+
+  /* ============================================================
+     05. CATEGORY FOCUS MODES
+     ============================================================ */
+  const applyFilter = filter => {
+    filterButtons.forEach(button => button.setAttribute("aria-pressed", button.dataset.projectFilter === filter ? "true" : "false"));
+    links.forEach(link => link.classList.toggle("is-filtered", filter !== "all" && link.dataset.group !== filter));
+    lineElements.forEach(line => {
+      const from = links[Number(line.dataset.from)];
+      const to = links[Number(line.dataset.to)];
+      line.classList.toggle("is-filtered", from?.classList.contains("is-filtered") || to?.classList.contains("is-filtered"));
+    });
+    reset();
+  };
+
+  filterButtons.forEach(button => button.addEventListener("click", () => applyFilter(button.dataset.projectFilter || "all")));
+
+  /* ============================================================
+     06. KEYBOARD SHORTCUTS
+     ============================================================ */
+  document.addEventListener("keydown", event => {
+    if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "k") {
+      event.preventDefault();
+      document.querySelector("[data-directory-open]")?.click();
+      return;
+    }
+
+    if (!["ArrowRight","ArrowDown","ArrowLeft","ArrowUp"].includes(event.key) || !activeLink) return;
+    event.preventDefault();
+    const visibleLinks = links.filter(link => !link.classList.contains("is-filtered"));
+    const currentIndex = visibleLinks.indexOf(activeLink);
+    const direction = ["ArrowRight","ArrowDown"].includes(event.key) ? 1 : -1;
+    visibleLinks[(currentIndex + direction + visibleLinks.length) % visibleLinks.length]?.focus();
+  });
+
+  /* ============================================================
+     07. RESIZE AND FONT-LOAD SYNCHRONISATION
+     ============================================================ */
+  const resizeObserver = new ResizeObserver(scheduleLineUpdate);
+  resizeObserver.observe(stage);
+  links.forEach(link => resizeObserver.observe(link));
+  window.addEventListener("resize", scheduleLineUpdate);
+  document.fonts?.ready.then(scheduleLineUpdate);
+  scheduleLineUpdate();
 })();
