@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#0d1b2a">
+  <meta name="theme-color" content="#f5f2ea">
   <title>Département Spotter</title>
   <meta name="description" content="Spot French département numbers on number plates and collect all 101.">
   <style>
@@ -12,15 +12,15 @@
     /* ========================================================================== */
     :root { --ink:#10202f; --muted:#70808f; --paper:#f5f2ea; --card:#fffdf8; --line:#d8d3c8; --blue:#2767e8; --blue2:#76a1ff; --gold:#f4bd4b; --shadow:0 18px 55px rgba(16,32,47,.11); }
     * { box-sizing:border-box; }
-    html { background:var(--paper); }
-    body { margin:0; min-height:100vh; color:var(--ink); background:radial-gradient(circle at 85% 0%,rgba(39,103,232,.10),transparent 35rem),var(--paper); font:500 16px/1.4 ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+    html,body { margin:0; min-height:100%; background:var(--paper); }
+    body { min-height:100vh; color:var(--ink); background:radial-gradient(circle at 85% 0%,rgba(39,103,232,.10),transparent 35rem),var(--paper); font:500 16px/1.4 ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
     button,input,select { font:inherit; }
     button,select { color:inherit; }
 
     /* ========================================================================== */
     /* 02. APP SHELL                                                              */
     /* ========================================================================== */
-    .app { width:min(1000px,100%); margin:auto; padding:20px clamp(14px,3vw,30px) 115px; }
+    .app { width:min(1000px,100%); margin:auto; padding:20px clamp(14px,3vw,30px) 92px; }
     header { display:flex; align-items:flex-end; justify-content:space-between; gap:18px; margin-bottom:16px; }
     .header-main { min-width:0; }
     .eyebrow { margin:0 0 4px; color:var(--blue); font-size:11px; font-weight:900; letter-spacing:.15em; text-transform:uppercase; }
@@ -57,10 +57,11 @@
     .code-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(48px,1fr)); gap:6px; }
     .code-grid button { border:1px solid var(--line); border-radius:9px; background:#eeeae1; padding:9px 4px; font-weight:850; cursor:pointer; }
     .code-grid button.found { color:white; border-color:var(--blue); background:var(--blue); }
-    .board-footer { display:flex; align-items:center; justify-content:space-between; gap:14px; padding:5px 18px 16px; }
-    .last-found { color:var(--muted); font-size:13px; }
+    .board-footer { display:flex; align-items:center; justify-content:space-between; gap:10px; min-height:42px; padding:4px 16px 12px; }
+    .last-found { min-width:0; color:var(--muted); font-size:13px; }
     .last-found strong { color:var(--ink); }
-    .overseas-wrap { margin-left:auto; }
+    .footer-tools { display:flex; align-items:center; gap:10px; margin-left:auto; white-space:nowrap; }
+    .reset-btn { border:0; background:none; padding:2px 0; color:var(--muted); font-size:10px; cursor:pointer; }
     .overseas-wrap details { position:relative; }
     .overseas-wrap summary { list-style:none; cursor:pointer; color:var(--muted); font-size:11px; font-weight:850; }
     .overseas-wrap summary::-webkit-details-marker { display:none; }
@@ -69,13 +70,11 @@
     .overseas { display:flex; flex-wrap:wrap; justify-content:flex-end; gap:5px; margin-top:7px; max-width:330px; }
     .overseas button { border:1px solid var(--line); border-radius:999px; background:#eeeae1; padding:5px 8px; font-size:11px; font-weight:850; cursor:pointer; }
     .overseas button.found { color:white; border-color:var(--blue); background:var(--blue); }
-    .tiny-actions { margin-top:12px; text-align:right; }
-    .tiny-actions button { border:0; background:none; color:var(--muted); font-size:11px; cursor:pointer; }
 
     /* ========================================================================== */
     /* 04. QUICK ENTRY                                                            */
     /* ========================================================================== */
-    .entry-wrap { position:fixed; z-index:20; left:50%; bottom:max(14px,env(safe-area-inset-bottom)); width:min(590px,calc(100% - 24px)); transform:translateX(-50%); }
+    .entry-wrap { position:fixed; z-index:20; left:50%; bottom:max(10px,env(safe-area-inset-bottom)); width:min(590px,calc(100% - 24px)); transform:translateX(-50%); }
     .entry { display:grid; grid-template-columns:1fr auto; gap:9px; padding:9px; border:1px solid rgba(16,32,47,.12); border-radius:18px; background:rgba(255,253,248,.97); box-shadow:0 16px 50px rgba(16,32,47,.22); backdrop-filter:blur(14px); }
     .entry input { width:100%; min-width:0; border:0; outline:0; border-radius:12px; background:#f1eee7; padding:14px 16px; color:var(--ink); font-size:20px; font-weight:850; }
     .entry input::placeholder { color:#8a969f; font-weight:650; }
@@ -101,7 +100,7 @@
     /* 06. MOBILE                                                                 */
     /* ========================================================================== */
     @media (max-width:700px) {
-      .app { padding-top:14px; }
+      .app { padding:14px 14px 86px; }
       header { align-items:flex-start; gap:10px; }
       .header-tools { flex-direction:column-reverse; align-items:flex-end; gap:7px; }
       .sub { max-width:225px; }
@@ -111,8 +110,10 @@
       .board { border-radius:20px; }
       .map-shell { min-height:0; padding:8px 5px 3px; }
       #mapHost svg { max-height:510px; }
-      .board-footer { align-items:flex-start; padding:4px 12px 12px; }
-      .last-found { font-size:12px; max-width:70%; }
+      .board-footer { padding:3px 12px 10px; }
+      .last-found { max-width:58%; font-size:11px; }
+      .footer-tools { gap:8px; }
+      .reset-btn { font-size:9px; }
       .overseas-wrap summary { font-size:10px; }
       .overseas { position:absolute; right:0; z-index:5; width:240px; padding:8px; border:1px solid var(--line); border-radius:12px; background:var(--card); box-shadow:var(--shadow); }
     }
@@ -143,21 +144,23 @@
     <div class="progress-track"><div class="progress-bar" id="progress"></div></div>
 
     <!-- ======================================================================== -->
-    <!-- 02. MAP + COMPACT OVERSEAS                                               -->
+    <!-- 02. MAP + COMPACT FOOTER                                                 -->
     <!-- ======================================================================== -->
     <section class="board">
       <div class="map-shell"><div id="mapHost"><div class="loading" data-i18n="drawing">Drawing France…</div></div></div>
       <div class="board-footer">
         <div class="last-found" id="lastFound" data-i18n="nothing">Nothing spotted yet</div>
-        <div class="overseas-wrap">
-          <details>
-            <summary data-i18n="overseas">Overseas</summary>
-            <div class="overseas" id="overseas"></div>
-          </details>
+        <div class="footer-tools">
+          <button class="reset-btn" id="resetBtn" type="button" data-i18n="reset">Reset</button>
+          <div class="overseas-wrap">
+            <details>
+              <summary data-i18n="overseas">Overseas</summary>
+              <div class="overseas" id="overseas"></div>
+            </details>
+          </div>
         </div>
       </div>
     </section>
-    <div class="tiny-actions"><button id="resetBtn" type="button" data-i18n="reset">Reset progress</button></div>
   </main>
 
   <!-- ========================================================================== -->
@@ -201,11 +204,12 @@
     const names = new Map(OVERSEAS.map(d=>[d.code,d.name]));
     let lang = saved.lang === 'fr' ? 'fr' : 'en';
     let toastTimer;
+    let scrollBeforeKeyboard = 0;
 
     const I18N = {
       en:{
         eyebrow:'French plate hunt', sub:'See a département on a French number plate? Collect it.', language:'Language', drawing:'Drawing France…',
-        nothing:'Nothing spotted yet', overseas:'Overseas', reset:'Reset progress', spot:'Spot it', placeholder:'Enter number — e.g. 76', complete:'complete', latest:'Latest',
+        nothing:'Nothing spotted yet', overseas:'Overseas', reset:'Reset', spot:'Spot it', placeholder:'Enter number — e.g. 76', complete:'complete', latest:'Latest',
         invalid:'isn’t a département code', already:'already spotted', removed:'removed', mapFail:'Map could not load, so here are the département numbers instead.',
         finishText:'You found every French département. That deserves the prize.', prizePlaceholder:'Set your prize — e.g. Parc Astérix day', yourPrize:'Your prize', magnifique:'Magnifique',
         confirmReset:'Reset all spotted départements?', m10:'10 spotted — nice start!', m25:'25 spotted — quarter way!', m50:'50 spotted — halfway!', m75:'75 spotted — closing in!', m96:'Metropolitan France complete!', m101:'Every département. Complete!'
@@ -303,12 +307,13 @@
     function validCode(code) { return ALL_CODES.has(code); }
     function collect(rawCode) {
       const code = normaliseCode(rawCode);
-      if (!validCode(code)) { showMessage(`“${code || rawCode}” ${t('invalid')}`); return; }
-      if (found.has(code)) { showMessage(`${code} · ${nameFor(code)} ${t('already')}`); return; }
+      if (!validCode(code)) { showMessage(`“${code || rawCode}” ${t('invalid')}`); return false; }
+      if (found.has(code)) { showMessage(`${code} · ${nameFor(code)} ${t('already')}`); return false; }
 
       found.add(code); persist(); refreshUI(code); showMessage(`${code} · ${nameFor(code)} ✓`);
       const milestones = {10:t('m10'),25:t('m25'),50:t('m50'),75:t('m75'),96:t('m96'),101:t('m101')};
       if (milestones[found.size]) showToast(milestones[found.size]);
+      return true;
     }
     function toggleCollect(code) {
       if (found.has(code)) { found.delete(code); persist(); refreshUI(); showMessage(`${code} ${t('removed')}`); }
@@ -386,11 +391,16 @@
     // ============================================================================
     // 08. INPUT + SETTINGS
     // ============================================================================
+    inputEl.addEventListener('focus',()=>{ scrollBeforeKeyboard = window.scrollY; });
+
     document.querySelector('#entryForm').addEventListener('submit',event=>{
       event.preventDefault();
-      collect(inputEl.value);
+      const value = inputEl.value;
+      if (!value) return;
+      collect(value);
       inputEl.value='';
-      inputEl.focus();
+      inputEl.blur();
+      setTimeout(()=>window.scrollTo({top:scrollBeforeKeyboard,left:0,behavior:'smooth'}),80);
     });
 
     languageSelect.addEventListener('change',()=>{ lang=languageSelect.value==='fr'?'fr':'en'; applyLanguage(); });
