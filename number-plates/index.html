@@ -2,149 +2,97 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#101820">
-  <title>Platewise — Understand European number plates</title>
-  <meta name="description" content="Tap a number plate to understand what each part means. France is available first, with more countries to follow.">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f7f6f2">
+  <title>Platewise — Read a French number plate</title>
   <style>
-    :root{--ink:#101820;--muted:#67717c;--paper:#f5f3ee;--card:#fff;--line:#d9dde1;--blue:#0645a3;--blue2:#003b7d;--accent:#f2c94c;--shadow:0 18px 50px rgba(16,24,32,.11)}
+    :root{--ink:#111820;--muted:#66717c;--paper:#f7f6f2;--blue:#0645a3;--line:#cfd5da;--card:#fff}
     *{box-sizing:border-box}
-    body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink);background:radial-gradient(circle at top,#fff 0,#f7f5f0 42%,#eeece6 100%);min-height:100vh}
+    html,body{margin:0;min-height:100%;background:var(--paper);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    body{min-height:100svh}
     button,select{font:inherit}
-    .wrap{width:min(1040px,calc(100% - 28px));margin:auto;padding:30px 0 70px}
-    header{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:28px}
-    .brand{font-size:1.18rem;font-weight:850;letter-spacing:-.03em}.brand span{color:var(--blue)}
-    .tag{font-size:.78rem;color:var(--muted);border:1px solid var(--line);background:#ffffffaa;border-radius:999px;padding:7px 10px}
-    .hero{text-align:center;padding:36px 0 24px}.eyebrow{font-size:.78rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--blue)}
-    h1{font-size:clamp(2rem,7vw,4.6rem);line-height:.94;letter-spacing:-.055em;margin:12px auto 14px;max-width:820px}
-    .lede{font-size:clamp(1rem,2.2vw,1.2rem);line-height:1.55;color:var(--muted);max-width:650px;margin:auto}
-    .country-picker{margin:32px auto 0;display:flex;gap:8px;justify-content:center;flex-wrap:wrap}.country{border:1px solid var(--line);background:#fff;border-radius:999px;padding:10px 14px;cursor:pointer;font-weight:700;transition:.18s}.country:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(16,24,32,.08)}.country.active{background:var(--ink);color:#fff;border-color:var(--ink)}
-    .stage{margin-top:26px;background:rgba(255,255,255,.74);border:1px solid #e1e3e5;border-radius:30px;padding:clamp(18px,4vw,38px);box-shadow:var(--shadow);backdrop-filter:blur(12px)}
-    .stage-head{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;margin-bottom:25px}.stage-head h2{font-size:clamp(1.7rem,4vw,2.7rem);letter-spacing:-.04em;margin:0}.stage-head p{margin:4px 0 0;color:var(--muted)}
-    .status{font-size:.75rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:#176b43;background:#e7f5ed;padding:7px 10px;border-radius:999px;white-space:nowrap}
-    .plate-wrap{display:grid;place-items:center;padding:20px 0 8px;overflow:hidden}
-    .plate{width:min(760px,100%);aspect-ratio:4.72/1;background:#fff;border:4px solid #171717;border-radius:11px;box-shadow:0 7px 0 #c4c7c9,0 20px 32px rgba(0,0,0,.14);display:grid;grid-template-columns:12% 1fr 14%;overflow:hidden;position:relative}
-    .plate:after{content:"";position:absolute;inset:4px;border:1px solid #d4d4d4;border-radius:5px;pointer-events:none}
-    .euroband,.territory{background:linear-gradient(180deg,#073b95,#00387b);color:#fff;display:flex;align-items:center;justify-content:center;flex-direction:column;position:relative;z-index:1;cursor:pointer;border:0}.euroband{gap:4px}.stars{font-size:clamp(.72rem,2vw,1.2rem);letter-spacing:-.14em;color:#ffd93d;line-height:1}.fmark{font-size:clamp(1.35rem,4vw,2.5rem);font-weight:800}
-    .serial{display:flex;align-items:center;justify-content:center;font-family:Arial,Helvetica,sans-serif;font-size:clamp(2rem,8vw,5.3rem);font-weight:800;letter-spacing:.02em;cursor:pointer;border:0;background:#fff;color:#111;padding:0;min-width:0}.serial:hover,.euroband:hover,.territory:hover{filter:brightness(.96)}
-    .territory{padding:5px 2px}.region-mini{font-size:clamp(.52rem,1.6vw,.9rem);line-height:1.05;text-align:center;font-weight:750;max-width:92%;overflow-wrap:anywhere}.dept-num{font-size:clamp(1.5rem,4.4vw,3rem);font-weight:900;line-height:1.05;margin-top:4px}
-    .tap-note{text-align:center;color:var(--muted);font-size:.86rem;margin:18px 0 4px}
-    .detail{margin:24px auto 0;max-width:760px;border-top:1px solid var(--line);padding-top:22px;min-height:118px}.detail-kicker{font-size:.75rem;color:var(--blue);font-weight:850;text-transform:uppercase;letter-spacing:.09em}.detail h3{font-size:1.45rem;margin:5px 0 7px;letter-spacing:-.025em}.detail p{margin:0;color:#434d57;line-height:1.55}.detail strong{color:var(--ink)}
-    .controls{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;margin:22px 0 4px}.controls label{font-size:.83rem;font-weight:800;color:var(--muted)}select{border:1px solid var(--line);border-radius:12px;background:#fff;padding:10px 38px 10px 12px;max-width:300px}
-    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:26px}.fact{background:#fff;border:1px solid #e2e5e7;border-radius:18px;padding:18px}.fact .num{font-size:1.65rem;font-weight:900;letter-spacing:-.04em}.fact .label{font-size:.86rem;color:var(--muted);line-height:1.4;margin-top:2px}
-    .section{margin-top:42px}.section h2{font-size:1.7rem;letter-spacing:-.035em;margin:0 0 14px}.old-card{display:grid;grid-template-columns:1fr 1.2fr;gap:24px;align-items:center;background:#171717;color:#fff;border-radius:22px;padding:24px}.oldplate{background:#111;border:2px solid #aaa;border-radius:7px;color:#eee;font-family:Arial,sans-serif;font-size:clamp(1.8rem,6vw,3.6rem);font-weight:800;letter-spacing:.04em;text-align:center;padding:24px 10px;box-shadow:inset 0 0 0 2px #333}.old-card h3{margin:0 0 7px;font-size:1.35rem}.old-card p{color:#c8cdd2;line-height:1.55;margin:0}
-    .truth{margin-top:16px;background:#fff7d7;border:1px solid #f0d56b;border-radius:18px;padding:18px 20px;line-height:1.5}.truth b{display:block;margin-bottom:3px}
-    .coming{display:none;text-align:center;padding:70px 20px}.coming .flag{font-size:4rem}.coming h2{font-size:2rem;margin:10px 0 6px}.coming p{color:var(--muted);margin:0}
-    footer{max-width:760px;margin:42px auto 0;border-top:1px solid var(--line);padding-top:18px;color:var(--muted);font-size:.78rem;line-height:1.5}footer a{color:inherit}
-    @media(max-width:700px){.wrap{width:min(100% - 18px,1040px);padding-top:18px}.hero{padding-top:20px}.stage{border-radius:22px}.stage-head{align-items:flex-start;flex-direction:column}.plate{border-width:3px}.serial{font-size:clamp(1.8rem,10.8vw,4.2rem)}.grid{grid-template-columns:1fr}.old-card{grid-template-columns:1fr}.tag{display:none}.country-picker{justify-content:flex-start;overflow-x:auto;flex-wrap:nowrap;padding:2px 1px 8px}.country{flex:0 0 auto}}
+    .app{width:min(720px,100%);min-height:100svh;margin:auto;padding:14px 14px max(14px,env(safe-area-inset-bottom));display:grid;grid-template-rows:auto auto 1fr auto;gap:10px}
+    header{display:flex;align-items:center;justify-content:space-between;gap:10px}
+    .brand{font-size:1.1rem;font-weight:900;letter-spacing:-.04em}.brand span{color:var(--blue)}
+    select{border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 34px 8px 12px;font-weight:750;color:var(--ink);max-width:180px}
+    .intro{display:flex;align-items:end;justify-content:space-between;gap:12px}
+    .intro h1{font-size:clamp(1.45rem,6vw,2.2rem);line-height:1;letter-spacing:-.05em;margin:0}
+    .intro p{margin:0;color:var(--muted);font-size:.78rem;text-align:right;max-width:145px;line-height:1.25}
+
+    .diagram{position:relative;min-height:0;border:1px solid #e1e3e4;background:rgba(255,255,255,.72);border-radius:24px;overflow:hidden;padding:18px 10px;display:grid;place-items:center}
+    .plate-zone{position:relative;width:100%;height:100%;min-height:470px}
+    .plate{position:absolute;left:50%;top:49%;transform:translate(-50%,-50%);width:min(94%,620px);aspect-ratio:4.72/1;background:#fff;border:4px solid #171717;border-radius:10px;box-shadow:0 6px 0 #c7c9cb,0 13px 24px rgba(0,0,0,.13);display:grid;grid-template-columns:12% 1fr 14%;overflow:hidden;z-index:2}
+    .plate:after{content:"";position:absolute;inset:4px;border:1px solid #d6d6d6;border-radius:4px;pointer-events:none}
+    .euro,.territory{background:linear-gradient(180deg,#073b95,#00387b);color:#fff;display:flex;align-items:center;justify-content:center;flex-direction:column;position:relative;z-index:1}
+    .stars{font-size:clamp(.62rem,2.6vw,1rem);line-height:.8;color:#ffd43b;letter-spacing:-.12em}.f{font-weight:900;font-size:clamp(1.15rem,5vw,2rem);margin-top:4px}
+    .serial{display:flex;align-items:center;justify-content:center;font:900 clamp(2rem,10vw,4.8rem)/1 Arial,Helvetica,sans-serif;letter-spacing:.015em;white-space:nowrap;color:#111}
+    .territory{padding:3px 2px}.region{font-size:clamp(.43rem,1.8vw,.72rem);font-weight:800;text-align:center;line-height:1.02}.dept{font-size:clamp(1.4rem,5.4vw,2.55rem);font-weight:900;line-height:1;margin-top:4px}
+
+    .callout{position:absolute;width:min(42%,220px);background:var(--card);border:1px solid var(--line);border-radius:14px;padding:9px 10px;z-index:4;box-shadow:0 6px 18px rgba(16,24,32,.06)}
+    .callout b{display:block;font-size:.77rem;margin-bottom:2px}.callout span{display:block;color:var(--muted);font-size:.68rem;line-height:1.22}
+    .callout:after{content:"";position:absolute;height:1.5px;background:#6e7780;transform-origin:0 50%;z-index:-1}
+    .callout:before{content:"";position:absolute;width:7px;height:7px;border-right:2px solid #6e7780;border-bottom:2px solid #6e7780;z-index:5}
+
+    .c-eu{left:3%;top:10%}.c-eu:after{width:33%;right:-28%;bottom:-24%;transform:rotate(49deg)}.c-eu:before{right:-31%;bottom:-35%;transform:rotate(4deg)}
+    .c-serial{right:3%;top:8%}.c-serial:after{width:42%;left:-36%;bottom:-35%;transform:rotate(132deg)}.c-serial:before{left:-40%;bottom:-46%;transform:rotate(88deg)}
+    .c-region{left:3%;bottom:8%}.c-region:after{width:62%;right:-55%;top:-38%;transform:rotate(-34deg)}.c-region:before{right:-59%;top:-47%;transform:rotate(47deg)}
+    .c-dept{right:3%;bottom:7%}.c-dept:after{width:37%;left:-31%;top:-33%;transform:rotate(218deg)}.c-dept:before{left:-35%;top:-42%;transform:rotate(133deg)}
+
+    .note{position:absolute;left:50%;top:67%;transform:translateX(-50%);width:88%;text-align:center;color:#39424a;font-size:.72rem;line-height:1.3;z-index:3}
+    .note strong{color:var(--blue)}
+    .bottom{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:.72rem;color:var(--muted)}
+    .bottom button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:7px 10px;color:var(--ink);font-weight:750}
+
+    @media(max-width:520px){
+      .app{padding-top:10px;gap:8px}.intro p{font-size:.7rem;max-width:120px}.diagram{border-radius:20px;padding:8px}.plate-zone{min-height:0;height:calc(100svh - 158px);min-height:430px}.plate{width:96%;top:48%;border-width:3px}.callout{width:44%;padding:8px}.callout b{font-size:.73rem}.callout span{font-size:.64rem}.c-eu{top:7%;left:1%}.c-serial{top:5%;right:1%}.c-region{left:1%;bottom:5%}.c-dept{right:1%;bottom:4%}.note{top:64%;font-size:.68rem}}
+    @media(max-height:700px) and (max-width:520px){.intro p{display:none}.intro h1{font-size:1.35rem}.plate-zone{height:calc(100svh - 126px);min-height:385px}.callout span{font-size:.6rem}.callout{padding:6px 7px}.bottom{font-size:.65rem}}
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <header><div class="brand">Plate<span>wise</span></div><div class="tag">A visual guide to European registrations</div></header>
+  <main class="app">
+    <header>
+      <div class="brand">Plate<span>wise</span></div>
+      <select id="country" aria-label="Country">
+        <option value="fr">🇫🇷 France</option>
+        <option value="gb">🇬🇧 UK — soon</option>
+        <option value="de">🇩🇪 Germany — soon</option>
+        <option value="es">🇪🇸 Spain — soon</option>
+        <option value="it">🇮🇹 Italy — soon</option>
+        <option value="be">🇧🇪 Belgium — soon</option>
+        <option value="nl">🇳🇱 Netherlands — soon</option>
+        <option value="ch">🇨🇭 Switzerland — soon</option>
+      </select>
+    </header>
 
-    <section class="hero">
-      <div class="eyebrow">Read the road</div>
-      <h1>What does that number plate actually mean?</h1>
-      <p class="lede">Choose a country, tap the parts of a plate, and see what you can — and cannot — learn from it.</p>
-      <div class="country-picker" aria-label="Choose a country">
-        <button class="country active" data-country="fr">🇫🇷 France</button>
-        <button class="country" data-country="gb">🇬🇧 UK</button>
-        <button class="country" data-country="de">🇩🇪 Germany</button>
-        <button class="country" data-country="es">🇪🇸 Spain</button>
-        <button class="country" data-country="it">🇮🇹 Italy</button>
-        <button class="country" data-country="be">🇧🇪 Belgium</button>
-        <button class="country" data-country="nl">🇳🇱 Netherlands</button>
-        <button class="country" data-country="ch">🇨🇭 Switzerland</button>
+    <section class="intro">
+      <h1>🇫🇷 How a French plate works</h1>
+      <p>One plate. Four things worth knowing.</p>
+    </section>
+
+    <section class="diagram" aria-label="Annotated French number plate">
+      <div class="plate-zone">
+        <div class="callout c-eu"><b>EU + country</b><span>The blue band identifies France: <strong>F</strong>.</span></div>
+        <div class="callout c-serial"><b>AB-123-CD</b><span>A national serial. It does <strong>not</strong> encode a place or date.</span></div>
+        <div class="callout c-region"><b>Regional logo</b><span>Must match the département chosen on the plate.</span></div>
+        <div class="callout c-dept"><b>76 · Seine-Maritime</b><span>Chosen by the owner. It does <strong>not</strong> show where they live.</span></div>
+
+        <div class="plate">
+          <div class="euro"><div class="stars">✦✦✦<br>✦✦✦</div><div class="f">F</div></div>
+          <div class="serial">AB-123-CD</div>
+          <div class="territory"><div class="region">Normandie</div><div class="dept">76</div></div>
+        </div>
+
+        <div class="note"><strong>Since 2009:</strong> the registration stays with the vehicle for life. The right-hand département is decorative/territorial, not the vehicle's registration location.</div>
       </div>
     </section>
 
-    <main id="francePanel" class="stage">
-      <div class="stage-head"><div><h2>🇫🇷 France</h2><p>Current SIV system · introduced in 2009</p></div><div class="status">Available</div></div>
-
-      <div class="plate-wrap">
-        <div class="plate" aria-label="Example French registration plate AB-123-CD with Seine-Maritime territorial identifier">
-          <button class="euroband" data-part="country" aria-label="Explain the left blue band"><span class="stars">✦✦✦<br>✦✦✦</span><span class="fmark">F</span></button>
-          <button class="serial" data-part="serial" aria-label="Explain AB-123-CD">AB-123-CD</button>
-          <button class="territory" data-part="territory" aria-label="Explain the territorial identifier"><span class="region-mini" id="plateRegion">Normandie</span><span class="dept-num" id="plateDept">76</span></button>
-        </div>
-      </div>
-      <div class="tap-note">Tap a part of the plate to explain it</div>
-
-      <div class="controls"><label for="deptSelect">Try a département</label><select id="deptSelect" aria-label="Choose a French département"></select></div>
-
-      <div class="detail" id="detail" aria-live="polite">
-        <div class="detail-kicker">The registration</div>
-        <h3>AB-123-CD is a national serial number</h3>
-        <p>The SIV number is assigned automatically in a <strong>single national sequence</strong>. It is not a code for a place, and you cannot choose it. Once assigned, it normally stays with the vehicle for its lifetime.</p>
-      </div>
-
-      <div class="grid">
-        <div class="fact"><div class="num">2009</div><div class="label">SIV began for new vehicles on 15 April 2009.</div></div>
-        <div class="fact"><div class="num">7</div><div class="label">Alphanumeric characters: 2 letters, 3 digits, 2 letters.</div></div>
-        <div class="fact"><div class="num">∞</div><div class="label">The number stays with the vehicle through changes of owner or address.</div></div>
-      </div>
-
-      <section class="section">
-        <h2>The clever bit: 76 does not mean “from Seine-Maritime”</h2>
-        <div class="truth"><b>The territorial identifier is a choice.</b>The owner can choose any French département identifier, whether or not they live there. The regional logo must match that département.</div>
-      </section>
-
-      <section class="section">
-        <h2>Older French plates worked differently</h2>
-        <div class="old-card"><div class="oldplate">1234 AB 76</div><div><h3>The old FNI system</h3><p>On older registrations, the number at the end really was tied to the département of registration. Old-format plates can still be seen on vehicles that have not yet had a transaction that moves them into SIV.</p></div></div>
-      </section>
-
-      <section class="section">
-        <h2>So what can you tell at a glance?</h2>
-        <div class="grid">
-          <div class="fact"><div class="num">No</div><div class="label"><strong>Where the owner lives.</strong> The territorial identifier can be chosen freely.</div></div>
-          <div class="fact"><div class="num">No</div><div class="label"><strong>The vehicle's exact age.</strong> The serial is chronological, but it is not an explicit date code.</div></div>
-          <div class="fact"><div class="num">Yes</div><div class="label"><strong>The chosen département.</strong> And therefore its matching region.</div></div>
-        </div>
-      </section>
-
-      <footer>Primary sources: <a href="https://immatriculation.ants.gouv.fr/aide-et-contact/numero-et-plaque" target="_blank" rel="noopener">France Titres / ANTS — numéro et plaque</a> and <a href="https://immatriculation.ants.gouv.fr/home/all-about-vehicle-registration/the-vehicle-registration-system-siv" target="_blank" rel="noopener">France Titres / ANTS — SIV</a>. Built as an explanatory guide; special, diplomatic and temporary series are not yet covered.</footer>
-    </main>
-
-    <main id="comingPanel" class="stage coming">
-      <div class="flag" id="comingFlag">🇬🇧</div><h2 id="comingName">United Kingdom</h2><p>This country is next in the data structure, but France is the first complete explainer.</p>
-    </main>
-  </div>
+    <div class="bottom"><span>Modern SIV system · since 2009</span><button id="oldBtn" type="button">See old French plates</button></div>
+  </main>
 
   <script>
-    // 01 — French territorial identifiers. The right-hand number is chosen by the owner; region must correspond.
-    const departments = [
-      ['01','Ain','Auvergne-Rhône-Alpes'],['02','Aisne','Hauts-de-France'],['03','Allier','Auvergne-Rhône-Alpes'],['04','Alpes-de-Haute-Provence','Provence-Alpes-Côte d’Azur'],['05','Hautes-Alpes','Provence-Alpes-Côte d’Azur'],['06','Alpes-Maritimes','Provence-Alpes-Côte d’Azur'],['07','Ardèche','Auvergne-Rhône-Alpes'],['08','Ardennes','Grand Est'],['09','Ariège','Occitanie'],['10','Aube','Grand Est'],['11','Aude','Occitanie'],['12','Aveyron','Occitanie'],['13','Bouches-du-Rhône','Provence-Alpes-Côte d’Azur'],['14','Calvados','Normandie'],['15','Cantal','Auvergne-Rhône-Alpes'],['16','Charente','Nouvelle-Aquitaine'],['17','Charente-Maritime','Nouvelle-Aquitaine'],['18','Cher','Centre-Val de Loire'],['19','Corrèze','Nouvelle-Aquitaine'],['2A','Corse-du-Sud','Corse'],['2B','Haute-Corse','Corse'],['21','Côte-d’Or','Bourgogne-Franche-Comté'],['22','Côtes-d’Armor','Bretagne'],['23','Creuse','Nouvelle-Aquitaine'],['24','Dordogne','Nouvelle-Aquitaine'],['25','Doubs','Bourgogne-Franche-Comté'],['26','Drôme','Auvergne-Rhône-Alpes'],['27','Eure','Normandie'],['28','Eure-et-Loir','Centre-Val de Loire'],['29','Finistère','Bretagne'],['30','Gard','Occitanie'],['31','Haute-Garonne','Occitanie'],['32','Gers','Occitanie'],['33','Gironde','Nouvelle-Aquitaine'],['34','Hérault','Occitanie'],['35','Ille-et-Vilaine','Bretagne'],['36','Indre','Centre-Val de Loire'],['37','Indre-et-Loire','Centre-Val de Loire'],['38','Isère','Auvergne-Rhône-Alpes'],['39','Jura','Bourgogne-Franche-Comté'],['40','Landes','Nouvelle-Aquitaine'],['41','Loir-et-Cher','Centre-Val de Loire'],['42','Loire','Auvergne-Rhône-Alpes'],['43','Haute-Loire','Auvergne-Rhône-Alpes'],['44','Loire-Atlantique','Pays de la Loire'],['45','Loiret','Centre-Val de Loire'],['46','Lot','Occitanie'],['47','Lot-et-Garonne','Nouvelle-Aquitaine'],['48','Lozère','Occitanie'],['49','Maine-et-Loire','Pays de la Loire'],['50','Manche','Normandie'],['51','Marne','Grand Est'],['52','Haute-Marne','Grand Est'],['53','Mayenne','Pays de la Loire'],['54','Meurthe-et-Moselle','Grand Est'],['55','Meuse','Grand Est'],['56','Morbihan','Bretagne'],['57','Moselle','Grand Est'],['58','Nièvre','Bourgogne-Franche-Comté'],['59','Nord','Hauts-de-France'],['60','Oise','Hauts-de-France'],['61','Orne','Normandie'],['62','Pas-de-Calais','Hauts-de-France'],['63','Puy-de-Dôme','Auvergne-Rhône-Alpes'],['64','Pyrénées-Atlantiques','Nouvelle-Aquitaine'],['65','Hautes-Pyrénées','Occitanie'],['66','Pyrénées-Orientales','Occitanie'],['67','Bas-Rhin','Grand Est'],['68','Haut-Rhin','Grand Est'],['69','Rhône','Auvergne-Rhône-Alpes'],['70','Haute-Saône','Bourgogne-Franche-Comté'],['71','Saône-et-Loire','Bourgogne-Franche-Comté'],['72','Sarthe','Pays de la Loire'],['73','Savoie','Auvergne-Rhône-Alpes'],['74','Haute-Savoie','Auvergne-Rhône-Alpes'],['75','Paris','Île-de-France'],['76','Seine-Maritime','Normandie'],['77','Seine-et-Marne','Île-de-France'],['78','Yvelines','Île-de-France'],['79','Deux-Sèvres','Nouvelle-Aquitaine'],['80','Somme','Hauts-de-France'],['81','Tarn','Occitanie'],['82','Tarn-et-Garonne','Occitanie'],['83','Var','Provence-Alpes-Côte d’Azur'],['84','Vaucluse','Provence-Alpes-Côte d’Azur'],['85','Vendée','Pays de la Loire'],['86','Vienne','Nouvelle-Aquitaine'],['87','Haute-Vienne','Nouvelle-Aquitaine'],['88','Vosges','Grand Est'],['89','Yonne','Bourgogne-Franche-Comté'],['90','Territoire de Belfort','Bourgogne-Franche-Comté'],['91','Essonne','Île-de-France'],['92','Hauts-de-Seine','Île-de-France'],['93','Seine-Saint-Denis','Île-de-France'],['94','Val-de-Marne','Île-de-France'],['95','Val-d’Oise','Île-de-France'],['971','Guadeloupe','Guadeloupe'],['972','Martinique','Martinique'],['973','Guyane','Guyane'],['974','La Réunion','La Réunion'],['976','Mayotte','Mayotte']
-    ];
-
-    const select = document.getElementById('deptSelect');
-    departments.forEach(d => { const o=document.createElement('option'); o.value=d[0]; o.textContent=`${d[0]} — ${d[1]}`; if(d[0]==='76')o.selected=true; select.appendChild(o); });
-
-    const details = {
-      serial:{k:'The registration',h:'AB-123-CD is a national serial number',p:'The SIV number is assigned automatically in a <strong>single national sequence</strong>. It is not a code for a place, and you cannot choose it. Once assigned, it normally stays with the vehicle for its lifetime.'},
-      country:{k:'The blue band',h:'F means France',p:'The left side is the European-style country identifier: the EU stars above the international vehicle code <strong>F</strong> for France.'},
-      territory:{k:'The territorial identifier',h:'76 is chosen — not assigned from the address',p:'This example shows <strong>76, Seine-Maritime</strong>, with the matching <strong>Normandie</strong> identifier. The owner may choose a different département without living there; the region and département must correspond.'}
-    };
-
-    function showDetail(key){const d=details[key];document.getElementById('detail').innerHTML=`<div class="detail-kicker">${d.k}</div><h3>${d.h}</h3><p>${d.p}</p>`;}
-    document.querySelectorAll('[data-part]').forEach(el=>el.addEventListener('click',()=>showDetail(el.dataset.part)));
-
-    select.addEventListener('change',()=>{
-      const d=departments.find(x=>x[0]===select.value);
-      document.getElementById('plateDept').textContent=d[0]; document.getElementById('plateRegion').textContent=d[2];
-      details.territory.h=`${d[0]} is ${d[1]} — but it is still a choice`;
-      details.territory.p=`The plate is displaying <strong>${d[0]}, ${d[1]}</strong>, with the corresponding <strong>${d[2]}</strong> identifier. It does <strong>not</strong> prove that the vehicle or owner is based there.`;
-      showDetail('territory');
-    });
-
-    // 02 — Country switching. France is complete; the same page structure is ready for other country rule sets.
-    const countryNames={gb:['🇬🇧','United Kingdom'],de:['🇩🇪','Germany'],es:['🇪🇸','Spain'],it:['🇮🇹','Italy'],be:['🇧🇪','Belgium'],nl:['🇳🇱','Netherlands'],ch:['🇨🇭','Switzerland']};
-    document.querySelectorAll('.country').forEach(btn=>btn.addEventListener('click',()=>{
-      document.querySelectorAll('.country').forEach(b=>b.classList.remove('active')); btn.classList.add('active');
-      const fr=btn.dataset.country==='fr'; document.getElementById('francePanel').style.display=fr?'block':'none'; document.getElementById('comingPanel').style.display=fr?'none':'block';
-      if(!fr){const c=countryNames[btn.dataset.country];document.getElementById('comingFlag').textContent=c[0];document.getElementById('comingName').textContent=c[1];}
-    }));
+    const country=document.getElementById('country');
+    country.addEventListener('change',()=>{if(country.value!=='fr'){alert('France is the first complete country. I’ll add this one next.');country.value='fr';}});
+    document.getElementById('oldBtn').addEventListener('click',()=>alert('Old FNI example: 1234 AB 76. Unlike today, the final département number was tied to the place of registration.'));
   </script>
 </body>
 </html>
