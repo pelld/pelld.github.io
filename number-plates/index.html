@@ -1,97 +1,18 @@
 <!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#f7f6f2">
-  <title>Platewise — Read a French number plate</title>
-  <style>
-    :root{--ink:#111820;--muted:#66717c;--paper:#f7f6f2;--blue:#0645a3;--line:#cfd5da;--card:#fff}
-    *{box-sizing:border-box}
-    html,body{margin:0;min-height:100%;background:var(--paper);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
-    body{min-height:100svh}
-    button,select{font:inherit}
-    .app{width:min(720px,100%);min-height:100svh;margin:auto;padding:14px 14px max(14px,env(safe-area-inset-bottom));display:grid;grid-template-rows:auto auto 1fr auto;gap:10px}
-    header{display:flex;align-items:center;justify-content:space-between;gap:10px}
-    .brand{font-size:1.1rem;font-weight:900;letter-spacing:-.04em}.brand span{color:var(--blue)}
-    select{border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 34px 8px 12px;font-weight:750;color:var(--ink);max-width:180px}
-    .intro{display:flex;align-items:end;justify-content:space-between;gap:12px}
-    .intro h1{font-size:clamp(1.45rem,6vw,2.2rem);line-height:1;letter-spacing:-.05em;margin:0}
-    .intro p{margin:0;color:var(--muted);font-size:.78rem;text-align:right;max-width:145px;line-height:1.25}
-
-    .diagram{min-height:0;border:1px solid #e1e3e4;background:rgba(255,255,255,.72);border-radius:24px;padding:18px 12px;display:grid;grid-template-rows:auto auto auto;gap:14px;align-content:center}
-    .top-row,.bottom-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-    .callout{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 11px;box-shadow:0 6px 18px rgba(16,24,32,.05)}
-    .callout b{display:flex;align-items:center;gap:7px;font-size:.8rem;margin-bottom:2px}.callout span{display:block;color:var(--muted);font-size:.7rem;line-height:1.24}
-    .key{width:8px;height:8px;border-radius:50%;background:var(--blue);flex:0 0 auto}
-    .key.serial-key{background:#111}.key.territory-key{background:#0a4aa0}.key.region-key{background:#4f6f93}
-
-    .plate-wrap{display:grid;gap:10px}
-    .plate{width:100%;aspect-ratio:4.72/1;background:#fff;border:4px solid #171717;border-radius:10px;box-shadow:0 6px 0 #c7c9cb,0 13px 24px rgba(0,0,0,.13);display:grid;grid-template-columns:12% 1fr 14%;overflow:hidden;position:relative}
-    .plate:after{content:"";position:absolute;inset:4px;border:1px solid #d6d6d6;border-radius:4px;pointer-events:none}
-    .euro,.territory{background:linear-gradient(180deg,#073b95,#00387b);color:#fff;display:flex;align-items:center;justify-content:center;flex-direction:column;position:relative;z-index:1}
-    .stars{font-size:clamp(.62rem,2.6vw,1rem);line-height:.8;color:#ffd43b;letter-spacing:-.12em}.f{font-weight:900;font-size:clamp(1.15rem,5vw,2rem);margin-top:4px}
-    .serial{display:flex;align-items:center;justify-content:center;font:900 clamp(2rem,10vw,4.8rem)/1 Arial,Helvetica,sans-serif;letter-spacing:.015em;white-space:nowrap;color:#111}
-    .territory{padding:3px 2px}.region{font-size:clamp(.43rem,1.8vw,.72rem);font-weight:800;text-align:center;line-height:1.02}.dept{font-size:clamp(1.4rem,5.4vw,2.55rem);font-weight:900;line-height:1;margin-top:4px}
-    .note{text-align:center;color:#39424a;font-size:.72rem;line-height:1.3;padding:0 8px}.note strong{color:var(--blue)}
-
-    .bottom{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:.72rem;color:var(--muted)}
-    .bottom button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:7px 10px;color:var(--ink);font-weight:750}
-
-    @media(max-width:520px){
-      .app{padding-top:10px;gap:8px}.intro p{font-size:.7rem;max-width:120px}.diagram{border-radius:20px;padding:12px 8px;gap:12px}.callout{padding:8px 9px}.callout b{font-size:.75rem}.callout span{font-size:.65rem}.plate{border-width:3px}.note{font-size:.68rem}}
-    @media(max-height:700px) and (max-width:520px){.intro p{display:none}.intro h1{font-size:1.35rem}.diagram{padding-top:8px;padding-bottom:8px;gap:8px}.callout{padding:6px 7px}.callout span{font-size:.6rem}.bottom{font-size:.65rem}}
-  </style>
-</head>
-<body>
-  <main class="app">
-    <header>
-      <div class="brand">Plate<span>wise</span></div>
-      <select id="country" aria-label="Country">
-        <option value="fr">🇫🇷 France</option>
-        <option value="gb">🇬🇧 UK — soon</option>
-        <option value="de">🇩🇪 Germany — soon</option>
-        <option value="es">🇪🇸 Spain — soon</option>
-        <option value="it">🇮🇹 Italy — soon</option>
-        <option value="be">🇧🇪 Belgium — soon</option>
-        <option value="nl">🇳🇱 Netherlands — soon</option>
-        <option value="ch">🇨🇭 Switzerland — soon</option>
-      </select>
-    </header>
-
-    <section class="intro">
-      <h1>🇫🇷 How a French plate works</h1>
-      <p>One plate. Four things worth knowing.</p>
-    </section>
-
-    <section class="diagram" aria-label="Annotated French number plate">
-      <div class="top-row">
-        <div class="callout"><b><span class="key"></span>EU + country</b><span>The blue band identifies France: <strong>F</strong>.</span></div>
-        <div class="callout"><b><span class="key serial-key"></span>AB-123-CD</b><span>A national serial. It does <strong>not</strong> encode a place or date.</span></div>
-      </div>
-
-      <div class="plate-wrap">
-        <div class="plate">
-          <div class="euro"><div class="stars">✦✦✦<br>✦✦✦</div><div class="f">F</div></div>
-          <div class="serial">AB-123-CD</div>
-          <div class="territory"><div class="region">Normandie</div><div class="dept">76</div></div>
-        </div>
-        <div class="note"><strong>Since 2009:</strong> the registration stays with the vehicle for life. The right-hand département is territorial, not the vehicle's registration location.</div>
-      </div>
-
-      <div class="bottom-row">
-        <div class="callout"><b><span class="key region-key"></span>Regional logo</b><span>Must match the département chosen on the plate.</span></div>
-        <div class="callout"><b><span class="key territory-key"></span>76 · Seine-Maritime</b><span>Chosen by the owner. It does <strong>not</strong> show where they live.</span></div>
-      </div>
-    </section>
-
-    <div class="bottom"><span>Modern SIV system · since 2009</span><button id="oldBtn" type="button">See old French plates</button></div>
-  </main>
-
-  <script>
-    const country=document.getElementById('country');
-    country.addEventListener('change',()=>{if(country.value!=='fr'){alert('France is the first complete country. I’ll add this one next.');country.value='fr';}});
-    document.getElementById('oldBtn').addEventListener('click',()=>alert('Old FNI example: 1234 AB 76. Unlike today, the final département number was tied to the place of registration.'));
-  </script>
-</body>
-</html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#f7f6f2"><title>Platewise — Understand European number plates</title>
+<style>
+:root{--ink:#111820;--muted:#66717c;--paper:#f7f6f2;--blue:#0645a3;--line:#cfd5da;--card:#fff}*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:var(--paper);color:var(--ink);font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif}body{min-height:100svh}.app{width:min(720px,100%);min-height:100svh;margin:auto;padding:12px 14px max(12px,env(safe-area-inset-bottom));display:grid;grid-template-rows:auto auto 1fr auto;gap:9px}header{display:flex;align-items:center;justify-content:space-between;gap:10px}.brand{font-size:1.1rem;font-weight:900;letter-spacing:-.04em}.brand span{color:var(--blue)}select{font:inherit;border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 34px 8px 12px;font-weight:750;color:var(--ink);max-width:205px}.intro h1{font-size:clamp(1.35rem,5.6vw,2rem);line-height:1;letter-spacing:-.045em;margin:0}.diagram{border:1px solid #e1e3e4;background:#ffffffb8;border-radius:22px;padding:12px 9px;display:grid;grid-template-rows:auto auto auto;gap:12px;align-content:center}.row{display:grid;grid-template-columns:1fr 1fr;gap:9px}.callout{background:#fff;border:1px solid var(--line);border-radius:13px;padding:8px 9px;min-height:70px}.callout b{display:flex;align-items:center;gap:6px;font-size:.75rem;margin-bottom:2px}.callout span{display:block;color:var(--muted);font-size:.65rem;line-height:1.24}.key{width:8px;height:8px;border-radius:50%;background:var(--blue);flex:0 0 auto}.key.dark{background:#111}.key.alt{background:#63788d}.plate-wrap{display:grid;gap:9px}.plate{width:100%;min-height:94px;border:4px solid #171717;border-radius:10px;box-shadow:0 6px 0 #c7c9cb,0 12px 22px #0002;display:flex;align-items:stretch;overflow:hidden;background:#fff;color:#111}.band{width:12%;background:#0645a3;color:#fff;display:flex;align-items:center;justify-content:center;flex-direction:column;font-weight:900}.eu{font-size:.52rem;color:#ffd43b}.countrymark{font-size:1.4rem}.mainnum{flex:1;display:flex;align-items:center;justify-content:center;text-align:center;font:900 clamp(1.7rem,9vw,4.2rem)/1 Arial,sans-serif;white-space:nowrap;padding:0 5px}.side{width:15%;display:flex;align-items:center;justify-content:center;flex-direction:column;text-align:center;font-weight:850;font-size:.65rem}.side strong{font-size:1.45rem}.note{text-align:center;color:#39424a;font-size:.68rem;line-height:1.3;padding:0 6px}.note strong{color:var(--blue)}.bottom{font-size:.69rem;color:var(--muted);text-align:center}.uk .plate{background:#f3c900}.uk .band{background:#0645a3}.de .plate{border-radius:5px}.de .seal{font-size:1.3rem;margin:0 4px}.es .plate,.it .plate,.ch .plate{background:#fff}.be .plate{color:#a30d25}.nl .plate{background:#f4c900}.ch .plate{border-radius:3px}.ch .mainnum{font-size:clamp(1.8rem,8vw,3.8rem)}.hidden{display:none}@media(max-height:700px){.app{gap:6px}.diagram{gap:7px;padding:8px}.callout{min-height:57px;padding:6px 7px}.callout span{font-size:.59rem}.plate{min-height:78px}.bottom{font-size:.62rem}}
+</style></head><body><main class="app"><header><div class="brand">Plate<span>wise</span></div><select id="country" aria-label="Country"><option value="fr">🇫🇷 France</option><option value="gb">🇬🇧 United Kingdom</option><option value="de">🇩🇪 Germany</option><option value="es">🇪🇸 Spain</option><option value="it">🇮🇹 Italy</option><option value="be">🇧🇪 Belgium</option><option value="nl">🇳🇱 Netherlands</option><option value="ch">🇨🇭 Switzerland</option></select></header><section class="intro"><h1 id="title"></h1></section><section class="diagram" id="diagram"><div class="row" id="top"></div><div class="plate-wrap"><div id="plate"></div><div class="note" id="note"></div></div><div class="row" id="bottomrow"></div></section><div class="bottom" id="footer"></div></main>
+<script>
+const data={
+fr:{flag:'🇫🇷',name:'France',cls:'fr',plate:'<div class="plate"><div class="band"><span class="eu">✦✦✦</span><span class="countrymark">F</span></div><div class="mainnum">AB-123-CD</div><div class="band"><small>Normandie</small><span class="countrymark">76</span></div></div>',boxes:[['EU + F','France / EU identifier.'],['AB-123-CD','National serial; no place or date is encoded.'],['Normandie','Regional mark matching the chosen département.'],['76 · Seine-Maritime','Chosen by the owner; not where they necessarily live.']],note:'<strong>Age ❌ · Home location ❌</strong> — the SIV number stays with the vehicle for life.',foot:'Modern SIV system · since 2009'},
+gb:{flag:'🇬🇧',name:'United Kingdom',cls:'uk',plate:'<div class="plate"><div class="band"><span class="countrymark">UK</span></div><div class="mainnum">AB 26 CDE</div></div>',boxes:[['AB','Local memory tag: the first letter identifies a DVLA area; the second is an allocation letter.'],['26','Age identifier: 26 means Mar–Aug 2026. Sep 2026–Feb 2027 uses 76.'],['CDE','Random letters completing the unique registration.'],['Yellow rear plate','UK rear plates are yellow; front plates are white.']],note:'<strong>Age ✅ · Broad issuing area ✅</strong> — much more can be read directly than in France.',foot:'Current style · since September 2001'},
+de:{flag:'🇩🇪',name:'Germany',cls:'de',plate:'<div class="plate"><div class="band"><span class="eu">✦✦✦</span><span class="countrymark">D</span></div><div class="mainnum">B <span class="seal">◉</span> AB 1234</div></div>',boxes:[['B','Registration district: B = Berlin. Other examples include M = Munich and K = Cologne.'],['Seals','Official registration / inspection marks sit between the district and serial.'],['AB 1234','Vehicle-specific serial within the registration district.'],['D','Germany country identifier on the EU band.']],note:'<strong>Location ✅ · Age ❌</strong> — the opening code tells you the registration district.',foot:'Standard German registration format'},
+es:{flag:'🇪🇸',name:'Spain',cls:'es',plate:'<div class="plate"><div class="band"><span class="eu">✦✦✦</span><span class="countrymark">E</span></div><div class="mainnum">1234 BCD</div></div>',boxes:[['E','Spain / EU identifier.'],['1234','Four-number part of the national sequence.'],['BCD','Three-letter part of the national sequence.'],['No province code','Since 2000 ordinary plates no longer identify the province.']],note:'<strong>Province ❌ · Exact age ❌</strong> — essentially a nationwide sequential registration.',foot:'Current national system · since 2000'},
+it:{flag:'🇮🇹',name:'Italy',cls:'it',plate:'<div class="plate"><div class="band"><span class="eu">✦✦</span><span class="countrymark">I</span></div><div class="mainnum">GA 123 BC</div><div class="band"><small>24</small><small>MI</small></div></div>',boxes:[['I','Italy / EU identifier.'],['GA 123 BC','National sequential registration; the letters are not a province code.'],['24','Optional year-of-registration marker may appear in the right band.'],['MI','Optional province abbreviation; MI = Milano.']],note:'<strong>Sometimes age/location ✅</strong> — unusually, optional right-band markings can add both.',foot:'Modern national sequence'},
+be:{flag:'🇧🇪',name:'Belgium',cls:'be',plate:'<div class="plate"><div class="band"><span class="eu">✦✦</span><span class="countrymark">B</span></div><div class="mainnum">2-ABC-123</div></div>',boxes:[['B','Belgium / EU identifier.'],['2','Leading index digit: part of the registration series.'],['ABC-123','Three letters plus three digits complete the ordinary seven-character plate.'],['Red on white','Belgian ordinary plates are distinctive ruby-red characters on white.']],note:'<strong>Age ❌ · Location ❌</strong> — ordinary plates identify the registration, not a Belgian place.',foot:'European-format Belgian plate'},
+nl:{flag:'🇳🇱',name:'Netherlands',cls:'nl',plate:'<div class="plate"><div class="band"><span class="eu">✦✦</span><span class="countrymark">NL</span></div><div class="mainnum">G-123-BC</div></div>',boxes:[['NL','Netherlands / EU identifier.'],['G-123-BC','One of a succession of national “sidecode” formats.'],['Yellow plate','Ordinary Dutch passenger-car plates use black characters on yellow.'],['Sequence clue','The format/sequence can roughly indicate when a registration was issued, but it is not a simple date code.']],note:'<strong>Exact age ❌ · Location ❌</strong> — the combination is nationally allocated.',foot:'Dutch national registration system'},
+ch:{flag:'🇨🇭',name:'Switzerland',cls:'ch',plate:'<div class="plate"><div class="side">🇨🇭</div><div class="mainnum">ZH 123456</div><div class="side">🛡️</div></div>',boxes:[['ZH','Canton code: ZH = Zürich; GE = Genève, BE = Bern, etc.'],['123456','Serial number issued within the canton.'],['Swiss shield','Swiss coat of arms appears on the plate.'],['Cantonal shield','The canton’s coat of arms appears at the other side.']],note:'<strong>Canton ✅ · Age ❌</strong> — Swiss plates are strongly geographical.',foot:'Swiss cantonal registration system'}
+};
+function box(x,i){return `<div class="callout"><b><span class="key ${i%2?'dark':'alt'}"></span>${x[0]}</b><span>${x[1]}</span></div>`}function render(k){const d=data[k];document.getElementById('title').textContent=`${d.flag} How a ${d.name} plate works`;document.getElementById('diagram').className=`diagram ${d.cls}`;document.getElementById('top').innerHTML=d.boxes.slice(0,2).map(box).join('');document.getElementById('bottomrow').innerHTML=d.boxes.slice(2,4).map((x,i)=>box(x,i+2)).join('');document.getElementById('plate').innerHTML=d.plate;document.getElementById('note').innerHTML=d.note;document.getElementById('footer').textContent=d.foot}const country=document.getElementById('country');country.onchange=()=>render(country.value);render('fr');
+</script></body></html>
