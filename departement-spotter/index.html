@@ -25,27 +25,53 @@ const MAP_SOURCES=['https://raw.githubusercontent.com/VictorCazanave/svg-maps/ma
 const OVERSEAS=[{code:'971',name:'Guadeloupe'},{code:'972',name:'Martinique'},{code:'973',name:'Guyane'},{code:'974',name:'La Réunion'},{code:'976',name:'Mayotte'}];
 const METRO_CODES=[...Array.from({length:19},(_,i)=>String(i+1).padStart(2,'0')),'2A','2B',...Array.from({length:75},(_,i)=>String(i+21))];
 const ALL_CODES=new Set([...METRO_CODES,...OVERSEAS.map(d=>d.code)]);
-const saved=JSON.parse(localStorage.getItem(STORAGE_KEY)||'{"found":[],"lang":"en"}');
-const found=new Set((saved.found||[]).map(String));
+let saved={found:[],lang:'en'};
+try{saved=JSON.parse(localStorage.getItem(STORAGE_KEY)||'{"found":[],"lang":"en"}')||saved}catch(e){}
+const found=new Set(Array.isArray(saved.found)?saved.found.map(String):[]);
 const names=new Map(OVERSEAS.map(d=>[d.code,d.name]));
 let lang=saved.lang==='fr'?'fr':'en',latest=saved.latest||null,scrollBeforeKeyboard=0;
 const I={en:{eyebrow:'French plate hunt',sub:'See a département on a French number plate? Collect it.',language:'Language',overseas:'Overseas',reset:'Reset',spot:'Spot it',complete:'complete',latest:'Latest',nothing:'Nothing spotted yet',invalid:'isn’t a département code',already:'already spotted',removed:'removed',finishText:'You found every French département. That deserves the prize.',magnifique:'Magnifique',drawing:'Drawing France…',mapFail:'Map unavailable — use the numbered fallback.'},fr:{eyebrow:'Chasse aux plaques françaises',sub:'Vous voyez un numéro de département sur une plaque ? Ajoutez-le.',language:'Langue',overseas:'Outre-mer',reset:'Réinitialiser',spot:'Ajouter',complete:'terminé',latest:'Dernier',nothing:'Aucun département repéré',invalid:'n’est pas un code de département',already:'déjà repéré',removed:'supprimé',finishText:'Vous avez trouvé tous les départements français.',magnifique:'Magnifique',drawing:'Carte de France…',mapFail:'Carte indisponible — utilisez les numéros.'}};
 const q=s=>document.querySelector(s),mapHost=q('#mapHost'),input=q('#codeInput');
 function t(k){return I[lang][k]}
 function normalise(v){let r=String(v).trim();return /^\d$/.test(r)?'0'+r:r}
-function persist(){localStorage.setItem(STORAGE_KEY,JSON.stringify({found:[...found],prize:saved.prize||'',lang,latest}))}
+function persist(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify({found:[...found],prize:saved.prize||'',lang,latest}))}catch(e){}}
 function nameFor(c){return names.get(c)||`Département ${c}`}
 function msg(s){let e=q('#entryMessage');e.textContent=s;e.classList.add('show');clearTimeout(e.x);e.x=setTimeout(()=>e.classList.remove('show'),1800)}
-function refresh(){q('#count').textContent=found.size;q('#percent').textContent=`${Math.round(found.size/101*100)}% ${t('complete')}`;q('#progress').style.width=`${found.size/101*100}%`;document.querySelectorAll('[data-code]').forEach(e=>{e.classList.toggle('found',found.has(e.dataset.code));e.classList.toggle('latest',e.dataset.code===latest)});document.querySelectorAll('.map-code').forEach(e=>{e.classList.toggle('found',found.has(e.dataset.code));e.classList.toggle('latest',e.dataset.code===latest)});q('#lastFound').innerHTML=latest?`${t('latest')}: <strong>${latest} · ${nameFor(latest)}</strong>`:t('nothing');if(found.size===101&&!q('#finishDialog').open)q('#finishDialog').showModal()}
+function refresh(){q('#count').textContent=found.size;q('#percent').textContent=`${Math.round(found.size/101*100)}% ${t('complete')}`;q('#progress').style.width=`${found.size/101*100}%`;document.querySelectorAll('[data-code]').forEach(e=>{e.classList.toggle('found',found.has(e.dataset.code));e.classList.toggle('latest',e.dataset.code===latest)});q('#lastFound').innerHTML=latest?`${t('latest')}: <strong>${latest} · ${nameFor(latest)}</strong>`:t('nothing');if(found.size===101&&!q('#finishDialog').open)q('#finishDialog').showModal()}
 function collect(raw){let c=normalise(raw);if(!ALL_CODES.has(c)){msg(`“${c}” ${t('invalid')}`);return}if(found.has(c)){latest=c;persist();refresh();msg(`${c} · ${nameFor(c)} ${t('already')}`);return}found.add(c);latest=c;persist();refresh();msg(`${c} · ${nameFor(c)} ✓`)}
 function toggle(c){if(found.has(c)){found.delete(c);if(latest===c)latest=null;persist();refresh();msg(`${c} ${t('removed')}`)}else collect(c)}
 const overseas=q('#overseas');OVERSEAS.forEach(d=>{let b=document.createElement('button');b.type='button';b.dataset.code=d.code;b.textContent=`${d.code} · ${d.name}`;b.onclick=()=>toggle(d.code);overseas.appendChild(b)});
-function attach(svg){let paths=[...svg.querySelectorAll('path[id]')];paths.forEach(p=>{let c=String(p.id).toUpperCase();if(!METRO_CODES.includes(c))return;p.dataset.code=c;names.set(c,p.getAttribute('aria-label')||`Département ${c}`);p.onclick=()=>toggle(c)});let g=document.createElementNS('http://www.w3.org/2000/svg','g');svg.appendChild(g);paths.forEach(p=>{let c=p.dataset.code;if(!c)return,b=p.getBBox(),x=document.createElementNS('http://www.w3.org/2000/svg','text');x.setAttribute('x',b.x+b.width/2);x.setAttribute('y',b.y+b.height/2);x.setAttribute('font-size',Math.max(5.5,Math.min(10,Math.min(b.width,b.height)*.42)));x.setAttribute('class','map-code');x.dataset.code=c;x.textContent=c;g.appendChild(x)});refresh()}
-function renderSvg(text){let d=new DOMParser().parseFromString(text,'image/svg+xml'),s=d.documentElement;if(s.nodeName.toLowerCase()!=='svg')throw new Error('Invalid SVG');s.removeAttribute('width');s.removeAttribute('height');mapHost.replaceChildren(document.importNode(s,true));attach(mapHost.querySelector('svg'))}
+function attach(svg){
+  const paths=[...svg.querySelectorAll('path[id]')];
+  paths.forEach(p=>{
+    const c=String(p.id).toUpperCase();
+    if(!METRO_CODES.includes(c))return;
+    p.dataset.code=c;
+    names.set(c,p.getAttribute('aria-label')||`Département ${c}`);
+    p.onclick=()=>toggle(c);
+  });
+  const g=document.createElementNS('http://www.w3.org/2000/svg','g');
+  svg.appendChild(g);
+  paths.forEach(p=>{
+    const c=p.dataset.code;
+    if(!c)return;
+    const b=p.getBBox();
+    const x=document.createElementNS('http://www.w3.org/2000/svg','text');
+    x.setAttribute('x',b.x+b.width/2);
+    x.setAttribute('y',b.y+b.height/2);
+    x.setAttribute('font-size',Math.max(5.5,Math.min(10,Math.min(b.width,b.height)*.42)));
+    x.setAttribute('class','map-code');
+    x.dataset.code=c;
+    x.textContent=c;
+    g.appendChild(x);
+  });
+  refresh();
+}
+function renderSvg(text){const d=new DOMParser().parseFromString(text,'image/svg+xml'),s=d.documentElement;if(s.nodeName.toLowerCase()!=='svg')throw new Error('Invalid SVG');s.removeAttribute('width');s.removeAttribute('height');mapHost.replaceChildren(document.importNode(s,true));attach(mapHost.querySelector('svg'))}
 async function fetchWithTimeout(url,ms=4500){const controller=new AbortController();const timer=setTimeout(()=>controller.abort(),ms);try{const r=await fetch(url,{cache:'force-cache',signal:controller.signal});if(!r.ok)throw new Error(`HTTP ${r.status}`);return await r.text()}finally{clearTimeout(timer)}}
-function fallback(){let wrap=document.createElement('div'),note=document.createElement('div'),g=document.createElement('div');note.className='loading';note.style.padding='10px 0 14px';note.textContent=t('mapFail');g.className='code-grid';METRO_CODES.forEach(c=>{let b=document.createElement('button');b.type='button';b.dataset.code=c;b.textContent=c;b.onclick=()=>toggle(c);g.appendChild(b)});wrap.append(note,g);mapHost.replaceChildren(wrap);refresh()}
-async function draw(){const cached=localStorage.getItem(MAP_CACHE_KEY);if(cached){try{renderSvg(cached);return}catch(e){localStorage.removeItem(MAP_CACHE_KEY)}}for(const url of MAP_SOURCES){try{const text=await fetchWithTimeout(url);localStorage.setItem(MAP_CACHE_KEY,text);renderSvg(text);return}catch(e){console.warn('Map source failed',url,e)}}fallback()}
-function language(){document.documentElement.lang=lang;q('#languageSelect').value=lang;document.querySelectorAll('[data-i18n]').forEach(e=>{if(t(e.dataset.i18n))e.textContent=t(e.dataset.i18n)});q('#loading')&&(q('#loading').textContent=t('drawing'));refresh();persist()}
+function fallback(){const wrap=document.createElement('div'),note=document.createElement('div'),g=document.createElement('div');note.className='loading';note.style.padding='10px 0 14px';note.textContent=t('mapFail');g.className='code-grid';METRO_CODES.forEach(c=>{const b=document.createElement('button');b.type='button';b.dataset.code=c;b.textContent=c;b.onclick=()=>toggle(c);g.appendChild(b)});wrap.append(note,g);mapHost.replaceChildren(wrap);refresh()}
+async function draw(){let cached=null;try{cached=localStorage.getItem(MAP_CACHE_KEY)}catch(e){}if(cached){try{renderSvg(cached);return}catch(e){try{localStorage.removeItem(MAP_CACHE_KEY)}catch(x){}}}for(const url of MAP_SOURCES){try{const text=await fetchWithTimeout(url);try{localStorage.setItem(MAP_CACHE_KEY,text)}catch(e){}renderSvg(text);return}catch(e){console.warn('Map source failed',url,e)}}fallback()}
+function language(){document.documentElement.lang=lang;q('#languageSelect').value=lang;document.querySelectorAll('[data-i18n]').forEach(e=>{if(t(e.dataset.i18n))e.textContent=t(e.dataset.i18n)});const loading=q('#loading');if(loading)loading.textContent=t('drawing');refresh();persist()}
 input.addEventListener('focus',()=>{scrollBeforeKeyboard=window.scrollY});
 q('#entryForm').onsubmit=e=>{e.preventDefault();if(!input.value)return;collect(input.value);input.value='';input.blur();setTimeout(()=>window.scrollTo({top:scrollBeforeKeyboard,left:0,behavior:'smooth'}),350)};
 q('#languageSelect').onchange=()=>{lang=q('#languageSelect').value;language()};
@@ -54,4 +80,5 @@ q('#prizeInput').oninput=e=>{saved.prize=e.target.value.trim();persist();q('#pri
 q('#closeFinish').onclick=()=>q('#finishDialog').close();
 language();draw();
 </script>
-</body></html>
+</body>
+</html>
