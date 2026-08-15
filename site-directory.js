@@ -2,6 +2,8 @@
    00. AUTOMATIC GITHUB PAGES DIRECTORY
    Reads public repositories from GitHub and lists those with
    GitHub Pages enabled. Curated showcase content remains in HTML.
+   Root-repository mini-sites are supplied explicitly because the
+   GitHub repository API cannot discover them as separate projects.
    ============================================================ */
 
 const DIRECTORY_CONFIG = {
@@ -9,7 +11,17 @@ const DIRECTORY_CONFIG = {
   rootRepository: "pelld.github.io",
   excludedRepositories: ["our-days"],
   apiUrl: "https://api.github.com/users/pelld/repos?per_page=100&sort=updated",
+
+  embeddedSites: [
+    { name: "departement-spotter", description: "Collect French départements as you spot their numbers on vehicle plates.", homepage: "https://pelld.github.io/departement-spotter/", topics: ["game"] },
+    { name: "number-plates", description: "Explore current European number plates and what their markings mean.", homepage: "https://pelld.github.io/number-plates/", topics: ["reference"] },
+    { name: "vehicle-spotter", description: "Count the vehicle makes and models you see on the road.", homepage: "https://pelld.github.io/vehicle-spotter/", topics: ["game"] }
+  ],
+
   fallbackRepositories: [
+    { name: "tree", description: "Explore museum-quality insect photographs at their original detail." },
+    { name: "Candela", description: "Interactive GCSE physics revision with questions and simulations." },
+    { name: "Verbum", description: "Build English, French and Spanish vocabulary with recall and review." },
     { name: "patient-flow-explorer", description: "Explore patient pathways, demand, delay and capacity." },
     { name: "where-is-the-art", description: "Find artworks and museums by artist or location." },
     { name: "population-health-system-explorer", description: "Explore relationships across the population health system." },
@@ -35,7 +47,13 @@ const DISPLAY_NAMES = {
   "amelia-nepal-game": "Amelia in Nepal",
   "hunter-dirt-bike-adventure": "Hunter's Dirt Bike Adventure",
   "dirt-bike-dash": "Dirt Bike Dash",
-  "animal-dash": "Animal Dash"
+  "animal-dash": "Animal Dash",
+  "Verbum": "Verbum",
+  "Candela": "Candela",
+  "tree": "Natural History Close-Up",
+  "departement-spotter": "Département Spotter",
+  "number-plates": "Platewise",
+  "vehicle-spotter": "Road Spotter"
 };
 
 /* ============================================================
@@ -50,7 +68,10 @@ function titleFromRepository(name) {
 
 function categoryFromRepository(repository) {
   const topics = repository.topics || [];
-  if (topics.includes("game") || /game|dash|quiz/.test(repository.name)) return "Game";
+  if (repository.name === "Verbum" || repository.name === "Candela") return "Learning";
+  if (repository.name === "tree") return "Natural history";
+  if (repository.name === "number-plates") return "Reference";
+  if (topics.includes("game") || /game|dash|quiz|spotter/.test(repository.name)) return "Game";
   if (topics.includes("population-health") || repository.name.startsWith("population-health-") || repository.name === "patient-flow-explorer") return "Population health";
   if (topics.includes("evidence") || /p-value|evidence/.test(repository.name)) return "Evidence";
   if (topics.includes("tool")) return "Tool";
@@ -128,10 +149,21 @@ function initialiseDirectoryDrawer() {
 }
 
 /* ============================================================
-   04. GITHUB DISCOVERY WITH STATIC FALLBACK
-   The fallback ensures the directory remains useful if GitHub's
-   public API is temporarily unavailable or rate-limited.
+   04. GITHUB DISCOVERY WITH ROOT-SITE MERGE AND STATIC FALLBACK
+   Root-repository projects are merged with repository Pages sites.
+   The fallback keeps the directory useful if GitHub's public API is
+   temporarily unavailable or rate-limited.
    ============================================================ */
+
+function mergeUniqueProjects(projects) {
+  const seen = new Set();
+  return projects.filter(project => {
+    const key = pagesUrl(project).toLowerCase();
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
 
 async function loadDirectory() {
   try {
@@ -140,10 +172,10 @@ async function loadDirectory() {
 
     const repositories = await response.json();
     const visiblePages = repositories.filter(repository => repository.has_pages && !repository.archived && repository.name !== DIRECTORY_CONFIG.rootRepository && !DIRECTORY_CONFIG.excludedRepositories.includes(repository.name) && !(repository.topics || []).includes("hide-from-homepage"));
-    renderDirectory(visiblePages);
+    renderDirectory(mergeUniqueProjects([...DIRECTORY_CONFIG.embeddedSites, ...visiblePages]));
   } catch (error) {
     console.warn("Automatic GitHub Pages discovery failed; using the saved directory.", error);
-    renderDirectory(DIRECTORY_CONFIG.fallbackRepositories);
+    renderDirectory(mergeUniqueProjects([...DIRECTORY_CONFIG.embeddedSites, ...DIRECTORY_CONFIG.fallbackRepositories]));
   }
 }
 
