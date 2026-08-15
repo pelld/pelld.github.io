@@ -1,0 +1,995 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#070912">
+  <title>Moon Atlas — Learn the moons of the Solar System</title>
+  <meta name="description" content="An interactive trainer for learning the major moons of the planets in our Solar System.">
+
+  <style>
+    /* 00A — RESET + TOKENS -------------------------------------------------- */
+    :root {
+      --bg: #070912;
+      --panel: rgba(18, 22, 39, .82);
+      --panel-2: rgba(28, 34, 57, .86);
+      --line: rgba(255, 255, 255, .10);
+      --text: #f6f7fb;
+      --muted: #a7adc1;
+      --accent: #9f8cff;
+      --accent-2: #58d3ff;
+      --good: #65e6a2;
+      --bad: #ff7a8c;
+      --shadow: 0 18px 60px rgba(0, 0, 0, .28);
+      --radius: 24px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 18% 7%, rgba(75, 60, 150, .22), transparent 32rem),
+        radial-gradient(circle at 82% 15%, rgba(0, 137, 190, .13), transparent 28rem),
+        var(--bg);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      overflow-x: hidden;
+    }
+
+    button, input { font: inherit; }
+    button { -webkit-tap-highlight-color: transparent; }
+
+    /* 00B — STAR FIELD ------------------------------------------------------ */
+    body::before,
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    body::before {
+      background-image:
+        radial-gradient(circle, rgba(255,255,255,.78) 0 1px, transparent 1.4px),
+        radial-gradient(circle, rgba(255,255,255,.38) 0 1px, transparent 1.4px);
+      background-size: 91px 91px, 147px 147px;
+      background-position: 11px 19px, 57px 73px;
+      opacity: .34;
+    }
+
+    body::after {
+      background: linear-gradient(to bottom, transparent 0, rgba(7,9,18,.7) 84%, var(--bg) 100%);
+    }
+
+    /* 01A — PAGE SHELL ------------------------------------------------------ */
+    .app {
+      width: min(1120px, calc(100% - 28px));
+      margin: 0 auto;
+      padding: max(24px, env(safe-area-inset-top)) 0 calc(60px + env(safe-area-inset-bottom));
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: #cbc3ff;
+      font-size: .74rem;
+      font-weight: 800;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--accent-2);
+      box-shadow: 0 0 15px var(--accent-2);
+    }
+
+    h1 {
+      margin: 11px 0 9px;
+      max-width: 780px;
+      font-size: clamp(2.35rem, 8vw, 5.6rem);
+      line-height: .92;
+      letter-spacing: -.06em;
+    }
+
+    .lede {
+      max-width: 650px;
+      margin: 0;
+      color: var(--muted);
+      font-size: clamp(1rem, 2.4vw, 1.18rem);
+      line-height: 1.6;
+    }
+
+    /* 01B — STATS ----------------------------------------------------------- */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      width: min(430px, 100%);
+      margin-top: 26px;
+    }
+
+    .stat {
+      padding: 13px 12px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: rgba(255,255,255,.035);
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 1.14rem;
+    }
+
+    .stat span {
+      display: block;
+      margin-top: 2px;
+      color: var(--muted);
+      font-size: .72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .07em;
+    }
+
+    /* 02A — MODE NAV -------------------------------------------------------- */
+    .mode-nav {
+      position: sticky;
+      top: 10px;
+      z-index: 20;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 5px;
+      margin: 32px 0 22px;
+      padding: 5px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: rgba(9, 12, 24, .82);
+      backdrop-filter: blur(20px);
+      box-shadow: 0 14px 50px rgba(0,0,0,.2);
+    }
+
+    .mode-btn {
+      min-height: 46px;
+      border: 0;
+      border-radius: 13px;
+      color: var(--muted);
+      background: transparent;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .mode-btn.active {
+      color: var(--text);
+      background: linear-gradient(135deg, rgba(159,140,255,.24), rgba(88,211,255,.13));
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.08);
+    }
+
+    .screen { display: none; }
+    .screen.active { display: block; animation: rise .28s ease both; }
+    @keyframes rise { from { opacity: 0; transform: translateY(8px); } }
+
+    /* 03A — PLANET SELECTOR ------------------------------------------------- */
+    .planet-strip {
+      display: grid;
+      grid-template-columns: repeat(8, minmax(78px, 1fr));
+      gap: 8px;
+      overflow-x: auto;
+      padding: 2px 0 10px;
+      scrollbar-width: none;
+    }
+    .planet-strip::-webkit-scrollbar { display: none; }
+
+    .planet-btn {
+      min-width: 78px;
+      padding: 12px 8px 10px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      color: var(--muted);
+      background: rgba(255,255,255,.025);
+      cursor: pointer;
+      transition: transform .18s ease, border-color .18s ease, background .18s ease;
+    }
+
+    .planet-btn:hover { transform: translateY(-2px); }
+    .planet-btn.active {
+      color: white;
+      border-color: rgba(159,140,255,.55);
+      background: rgba(159,140,255,.12);
+    }
+
+    .planet-orb {
+      display: block;
+      width: 38px;
+      height: 38px;
+      margin: 0 auto 8px;
+      border-radius: 50%;
+      box-shadow: inset -9px -7px 15px rgba(0,0,0,.25), 0 6px 15px rgba(0,0,0,.2);
+    }
+
+    .planet-btn span:last-child { font-size: .78rem; font-weight: 800; }
+
+    .mercury { background: linear-gradient(135deg,#c4bcb2,#77716c); }
+    .venus   { background: linear-gradient(135deg,#f2cf7f,#aa6d32); }
+    .earth   { background: linear-gradient(135deg,#36a1ff 42%,#76c77a 44%,#2b78d1 70%); }
+    .mars    { background: linear-gradient(135deg,#e97e51,#8e3928); }
+    .jupiter { background: repeating-linear-gradient(0deg,#c7966d 0 6px,#f0d3ad 6px 11px,#a9624c 11px 14px); }
+    .saturn  { background: linear-gradient(135deg,#f2d89a,#a9885b); }
+    .uranus  { background: linear-gradient(135deg,#a8f3f1,#56b7c7); }
+    .neptune { background: linear-gradient(135deg,#578eff,#243fbb); }
+
+    /* 03B — LEARN CARD ------------------------------------------------------ */
+    .learn-panel {
+      margin-top: 9px;
+      padding: clamp(20px, 4vw, 36px);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: linear-gradient(145deg, rgba(22,27,46,.92), rgba(12,15,28,.94));
+      box-shadow: var(--shadow);
+    }
+
+    .planet-heading {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .planet-heading h2 {
+      margin: 0;
+      font-size: clamp(1.9rem, 5vw, 3.3rem);
+      letter-spacing: -.04em;
+    }
+
+    .planet-heading p {
+      margin: 6px 0 0;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .count-pill {
+      flex: 0 0 auto;
+      padding: 8px 11px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: #d8dcff;
+      background: rgba(255,255,255,.04);
+      font-size: .74rem;
+      font-weight: 800;
+    }
+
+    .mnemonic {
+      margin: 22px 0;
+      padding: 15px 17px;
+      border-left: 3px solid var(--accent);
+      border-radius: 0 15px 15px 0;
+      background: rgba(159,140,255,.09);
+      color: #e4dfff;
+      line-height: 1.5;
+    }
+
+    .mnemonic small {
+      display: block;
+      margin-bottom: 3px;
+      color: #a99fd8;
+      font-size: .68rem;
+      font-weight: 900;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    .moon-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(175px, 1fr));
+      gap: 10px;
+    }
+
+    .moon-card {
+      min-height: 128px;
+      padding: 17px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: rgba(255,255,255,.035);
+    }
+
+    .moon-card strong {
+      display: block;
+      margin-bottom: 7px;
+      font-size: 1.15rem;
+    }
+
+    .moon-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: .87rem;
+      line-height: 1.45;
+    }
+
+    .tag {
+      display: inline-block;
+      margin-top: 12px;
+      color: #a9ddff;
+      font-size: .67rem;
+      font-weight: 850;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .empty-note {
+      padding: 24px;
+      border: 1px dashed rgba(255,255,255,.16);
+      border-radius: 18px;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    /* 04A — QUIZ ------------------------------------------------------------ */
+    .quiz-shell {
+      min-height: 485px;
+      padding: clamp(22px, 5vw, 42px);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: linear-gradient(145deg, rgba(21,26,45,.94), rgba(10,13,25,.96));
+      box-shadow: var(--shadow);
+    }
+
+    .quiz-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 33px;
+    }
+
+    .quiz-label {
+      color: #bbb3ee;
+      font-size: .72rem;
+      font-weight: 900;
+      letter-spacing: .13em;
+      text-transform: uppercase;
+    }
+
+    .streak {
+      color: #ffd188;
+      font-weight: 850;
+      font-size: .82rem;
+    }
+
+    .question {
+      margin: 0 0 25px;
+      max-width: 760px;
+      font-size: clamp(1.8rem, 6vw, 3.8rem);
+      line-height: 1.02;
+      letter-spacing: -.045em;
+    }
+
+    .question em {
+      color: #c5baff;
+      font-style: normal;
+    }
+
+    .answers {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 9px;
+    }
+
+    .answer-btn {
+      min-height: 60px;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      color: var(--text);
+      background: rgba(255,255,255,.035);
+      font-weight: 800;
+      cursor: pointer;
+      transition: transform .12s ease, background .15s ease;
+    }
+
+    .answer-btn:hover { background: rgba(255,255,255,.075); }
+    .answer-btn:active { transform: scale(.985); }
+    .answer-btn.correct { border-color: rgba(101,230,162,.7); background: rgba(101,230,162,.13); }
+    .answer-btn.wrong { border-color: rgba(255,122,140,.7); background: rgba(255,122,140,.13); }
+    .answer-btn:disabled { cursor: default; }
+
+    .feedback {
+      min-height: 62px;
+      margin-top: 17px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+    .feedback.good { color: #baf6d3; }
+    .feedback.bad { color: #ffc0c9; }
+
+    .next-btn,
+    .primary-btn {
+      min-height: 48px;
+      padding: 0 18px;
+      border: 0;
+      border-radius: 14px;
+      color: #090b15;
+      background: linear-gradient(135deg, #c8bbff, #6cdbff);
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .next-btn[hidden] { display: none; }
+
+    /* 05A — TYPE CHALLENGE -------------------------------------------------- */
+    .challenge-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(280px, .95fr);
+      gap: 14px;
+    }
+
+    .challenge-card,
+    .progress-card {
+      padding: clamp(22px, 4vw, 34px);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--panel);
+      box-shadow: var(--shadow);
+    }
+
+    .challenge-card h2,
+    .progress-card h2 {
+      margin: 0 0 9px;
+      font-size: 1.55rem;
+      letter-spacing: -.03em;
+    }
+
+    .subtle { color: var(--muted); line-height: 1.55; }
+
+    .challenge-planet {
+      margin: 30px 0 7px;
+      color: #cec5ff;
+      font-size: clamp(2.1rem, 8vw, 4.8rem);
+      font-weight: 900;
+      letter-spacing: -.055em;
+    }
+
+    .type-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 21px;
+    }
+
+    .type-row input {
+      min-width: 0;
+      flex: 1;
+      height: 51px;
+      padding: 0 15px;
+      border: 1px solid var(--line);
+      outline: 0;
+      border-radius: 14px;
+      color: var(--text);
+      background: rgba(255,255,255,.05);
+    }
+
+    .type-row input:focus { border-color: rgba(159,140,255,.7); box-shadow: 0 0 0 3px rgba(159,140,255,.11); }
+
+    .found-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      min-height: 36px;
+      margin-top: 16px;
+    }
+
+    .found-chip {
+      padding: 7px 10px;
+      border: 1px solid rgba(101,230,162,.25);
+      border-radius: 999px;
+      color: #c9f7dc;
+      background: rgba(101,230,162,.08);
+      font-size: .78rem;
+      font-weight: 800;
+    }
+
+    .challenge-message { min-height: 28px; margin-top: 13px; color: var(--muted); font-size: .87rem; }
+
+    .secondary-btn {
+      margin-top: 10px;
+      min-height: 42px;
+      padding: 0 14px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      color: var(--muted);
+      background: transparent;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    /* 05B — PROGRESS -------------------------------------------------------- */
+    .mastery-list { display: grid; gap: 9px; margin-top: 20px; }
+
+    .mastery-row {
+      display: grid;
+      grid-template-columns: 86px 1fr 38px;
+      gap: 9px;
+      align-items: center;
+      color: var(--muted);
+      font-size: .82rem;
+      font-weight: 750;
+    }
+
+    .mastery-track {
+      height: 8px;
+      overflow: hidden;
+      border-radius: 99px;
+      background: rgba(255,255,255,.07);
+    }
+
+    .mastery-fill {
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+    }
+
+    .reset-btn {
+      margin-top: 22px;
+      border: 0;
+      color: #858ba0;
+      background: transparent;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      cursor: pointer;
+      font-size: .78rem;
+    }
+
+    /* 06A — FOOTER ---------------------------------------------------------- */
+    footer {
+      padding: 30px 4px 0;
+      color: #70768a;
+      font-size: .75rem;
+      line-height: 1.5;
+    }
+
+    /* 07A — MOBILE ---------------------------------------------------------- */
+    @media (max-width: 760px) {
+      .app { width: min(100% - 20px, 1120px); }
+      .planet-strip { grid-template-columns: repeat(8, 78px); }
+      .learn-panel, .quiz-shell, .challenge-card, .progress-card { border-radius: 20px; }
+      .challenge-grid { grid-template-columns: 1fr; }
+      .planet-heading { display: block; }
+      .count-pill { display: inline-block; margin-top: 14px; }
+    }
+
+    @media (max-width: 440px) {
+      .answers { grid-template-columns: 1fr; }
+      .moon-grid { grid-template-columns: 1fr 1fr; }
+      .moon-card { min-height: 118px; padding: 14px; }
+      .moon-card strong { font-size: 1rem; }
+      .moon-card p { font-size: .8rem; }
+      .mode-btn { font-size: .84rem; }
+      .stats { width: 100%; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; animation: none !important; transition: none !important; }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="app">
+    <!-- 10A — HEADER -------------------------------------------------------- -->
+    <header>
+      <div class="eyebrow">Moon Atlas</div>
+      <h1>Know your moons.</h1>
+      <p class="lede">Learn the memorable moons first, then make them stick. Pick a planet, practise moon → planet, or type every moon you can remember.</p>
+
+      <div class="stats" aria-label="Learning statistics">
+        <div class="stat"><strong id="statAccuracy">—</strong><span>Accuracy</span></div>
+        <div class="stat"><strong id="statStreak">0</strong><span>Best streak</span></div>
+        <div class="stat"><strong id="statMastered">0</strong><span>Mastered</span></div>
+      </div>
+    </header>
+
+    <!-- 10B — MODE NAV ------------------------------------------------------ -->
+    <nav class="mode-nav" aria-label="Learning mode">
+      <button class="mode-btn active" data-screen="learn">Learn</button>
+      <button class="mode-btn" data-screen="practice">Practise</button>
+      <button class="mode-btn" data-screen="challenge">Challenge</button>
+    </nav>
+
+    <!-- 11A — LEARN SCREEN -------------------------------------------------- -->
+    <section class="screen active" id="screen-learn">
+      <div class="planet-strip" id="planetStrip" aria-label="Choose a planet"></div>
+      <article class="learn-panel" id="learnPanel"></article>
+    </section>
+
+    <!-- 12A — PRACTISE SCREEN ----------------------------------------------- -->
+    <section class="screen" id="screen-practice">
+      <div class="quiz-shell">
+        <div class="quiz-top">
+          <span class="quiz-label">Moon → planet</span>
+          <span class="streak" id="quizStreak">0 streak</span>
+        </div>
+        <h2 class="question" id="questionText"></h2>
+        <div class="answers" id="answers"></div>
+        <div class="feedback" id="feedback" aria-live="polite"></div>
+        <button class="next-btn" id="nextQuestion" hidden>Next moon →</button>
+      </div>
+    </section>
+
+    <!-- 13A — CHALLENGE SCREEN ---------------------------------------------- -->
+    <section class="screen" id="screen-challenge">
+      <div class="challenge-grid">
+        <article class="challenge-card">
+          <div class="quiz-label">Recall challenge</div>
+          <h2>Type the moons from memory</h2>
+          <p class="subtle">Spelling counts, but capital letters do not. Work through one planet at a time.</p>
+
+          <div class="challenge-planet" id="challengePlanet">Jupiter</div>
+          <div class="subtle" id="challengeTarget"></div>
+
+          <form class="type-row" id="typeForm">
+            <input id="moonInput" type="text" autocomplete="off" autocapitalize="words" placeholder="Type a moon…" aria-label="Moon name">
+            <button class="primary-btn" type="submit">Add</button>
+          </form>
+
+          <div class="found-list" id="foundList"></div>
+          <div class="challenge-message" id="challengeMessage" aria-live="polite"></div>
+          <button class="secondary-btn" id="revealBtn" type="button">Reveal / move on</button>
+        </article>
+
+        <aside class="progress-card">
+          <div class="quiz-label">Your memory</div>
+          <h2>Planet mastery</h2>
+          <p class="subtle">Each correct quiz answer builds that planet's bar. Progress is saved on this device.</p>
+          <div class="mastery-list" id="masteryList"></div>
+          <button class="reset-btn" id="resetProgress" type="button">Reset progress</button>
+        </aside>
+      </div>
+    </section>
+
+    <!-- 14A — FOOTER -------------------------------------------------------- -->
+    <footer>
+      Built as a learning set rather than a complete catalogue: it concentrates on the best-known named moons, so you can form a useful mental map before adding the hundreds of smaller satellites.
+    </footer>
+  </main>
+
+  <script>
+    /* 20A — LEARNING DATA --------------------------------------------------- */
+    const PLANETS = [
+      {
+        name: "Mercury", className: "mercury", summary: "The closest planet to the Sun has no natural moons.", mnemonic: "Nothing to memorise here — Mercury has no moon in this learning set.", moons: []
+      },
+      {
+        name: "Venus", className: "venus", summary: "Earth's near-twin in size also has no natural moons.", mnemonic: "Venus and Mercury are the two moonless planets.", moons: []
+      },
+      {
+        name: "Earth", className: "earth", summary: "Our planet has one large natural satellite.", mnemonic: "The easy one: Earth → Moon.", moons: [
+          { name: "Moon", fact: "Earth's familiar natural satellite; unusually large compared with its planet.", tag: "Foundation" }
+        ]
+      },
+      {
+        name: "Mars", className: "mars", summary: "Mars has two small, dark moons with names from Greek mythology.", mnemonic: "Phobos then Deimos — fear and dread.", moons: [
+          { name: "Phobos", fact: "The larger and inner Martian moon; it orbits very close to Mars.", tag: "Foundation" },
+          { name: "Deimos", fact: "The smaller and outer Martian moon.", tag: "Foundation" }
+        ]
+      },
+      {
+        name: "Jupiter", className: "jupiter", summary: "Start with the four Galilean moons — among the most important worlds beyond the planets.", mnemonic: "I Eat Green Cheese → Io, Europa, Ganymede, Callisto.", moons: [
+          { name: "Io", fact: "A vividly coloured world covered in active volcanoes.", tag: "Galilean" },
+          { name: "Europa", fact: "An icy moon thought to hide a global ocean beneath its crust.", tag: "Galilean" },
+          { name: "Ganymede", fact: "The largest moon in the Solar System — larger than Mercury.", tag: "Galilean" },
+          { name: "Callisto", fact: "A heavily cratered icy world and the outermost Galilean moon.", tag: "Galilean" },
+          { name: "Amalthea", fact: "A small, reddish, irregular moon orbiting inside Io's path.", tag: "Bonus" }
+        ]
+      },
+      {
+        name: "Saturn", className: "saturn", summary: "Saturn has a superb cast: a hazy giant, an ocean world, a cratered 'Death Star' and more.", mnemonic: "My Excellent Telescope Detects Rings, Titans, Ice → M E T D R T I.", moons: [
+          { name: "Mimas", fact: "Its huge Herschel crater gives it a famous Death Star appearance.", tag: "Core" },
+          { name: "Enceladus", fact: "An icy ocean moon that sprays water-rich plumes from its south pole.", tag: "Foundation" },
+          { name: "Tethys", fact: "A bright, icy moon with the enormous Odysseus impact crater.", tag: "Core" },
+          { name: "Dione", fact: "An icy moon marked by bright cliffs and wispy terrain.", tag: "Core" },
+          { name: "Rhea", fact: "Saturn's second-largest moon, made mostly of water ice and rock.", tag: "Core" },
+          { name: "Titan", fact: "A giant moon with a thick atmosphere and lakes of liquid hydrocarbons.", tag: "Foundation" },
+          { name: "Iapetus", fact: "A strange two-tone moon with a dramatic equatorial ridge.", tag: "Core" }
+        ]
+      },
+      {
+        name: "Uranus", className: "uranus", summary: "The five classical large moons are a satisfying group to learn together.", mnemonic: "My Aunt Usually Takes Oranges → Miranda, Ariel, Umbriel, Titania, Oberon.", moons: [
+          { name: "Miranda", fact: "A small moon with spectacular patchwork terrain and enormous cliffs.", tag: "Core" },
+          { name: "Ariel", fact: "A bright icy moon crossed by valleys and canyons.", tag: "Core" },
+          { name: "Umbriel", fact: "The darkest of Uranus's five major rounded moons.", tag: "Core" },
+          { name: "Titania", fact: "The largest moon of Uranus.", tag: "Core" },
+          { name: "Oberon", fact: "The outermost of Uranus's five major moons.", tag: "Core" }
+        ]
+      },
+      {
+        name: "Neptune", className: "neptune", summary: "Neptune's standout moon is Triton, but three names make a useful starter set.", mnemonic: "Please Try Neptune → Proteus, Triton, Nereid.", moons: [
+          { name: "Proteus", fact: "A large, dark, irregularly shaped inner moon.", tag: "Core" },
+          { name: "Triton", fact: "Neptune's largest moon; it travels in a retrograde orbit and has icy geysers.", tag: "Foundation" },
+          { name: "Nereid", fact: "An outer moon with a notably eccentric orbit.", tag: "Core" }
+        ]
+      }
+    ];
+
+    const QUIZ_MOONS = PLANETS.flatMap(planet => planet.moons.map(moon => ({ ...moon, planet: planet.name })));
+    const QUIZ_PLANETS = PLANETS.filter(p => p.moons.length > 0).map(p => p.name);
+
+    /* 20B — STATE ----------------------------------------------------------- */
+    const STORAGE_KEY = "moon-atlas-progress-v1";
+    const defaultState = {
+      answered: 0,
+      correct: 0,
+      streak: 0,
+      bestStreak: 0,
+      planetCorrect: {},
+      moonCorrect: {}
+    };
+
+    let state = loadState();
+    let selectedPlanet = "Jupiter";
+    let currentQuestion = null;
+    let questionLocked = false;
+    let challengeIndex = 3;
+    let challengeFound = new Set();
+
+    function loadState() {
+      try {
+        return { ...defaultState, ...JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}") };
+      } catch {
+        return { ...defaultState };
+      }
+    }
+
+    function saveState() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      renderStats();
+      renderMastery();
+    }
+
+    /* 21A — MODE NAV -------------------------------------------------------- */
+    document.querySelectorAll(".mode-btn").forEach(button => {
+      button.addEventListener("click", () => {
+        document.querySelectorAll(".mode-btn").forEach(b => b.classList.toggle("active", b === button));
+        document.querySelectorAll(".screen").forEach(screen => screen.classList.remove("active"));
+        document.getElementById(`screen-${button.dataset.screen}`).classList.add("active");
+
+        if (button.dataset.screen === "practice" && !currentQuestion) newQuestion();
+        if (button.dataset.screen === "challenge") document.getElementById("moonInput").focus({ preventScroll: true });
+      });
+    });
+
+    /* 22A — LEARN MODE ------------------------------------------------------ */
+    function renderPlanetStrip() {
+      const strip = document.getElementById("planetStrip");
+      strip.innerHTML = PLANETS.map(planet => `
+        <button class="planet-btn ${planet.name === selectedPlanet ? "active" : ""}" data-planet="${planet.name}">
+          <span class="planet-orb ${planet.className}" aria-hidden="true"></span>
+          <span>${planet.name}</span>
+        </button>
+      `).join("");
+
+      strip.querySelectorAll(".planet-btn").forEach(button => {
+        button.addEventListener("click", () => {
+          selectedPlanet = button.dataset.planet;
+          renderPlanetStrip();
+          renderLearnPanel();
+        });
+      });
+    }
+
+    function renderLearnPanel() {
+      const planet = PLANETS.find(p => p.name === selectedPlanet);
+      const panel = document.getElementById("learnPanel");
+      const countText = planet.moons.length === 0 ? "No moons" : `${planet.moons.length} to learn`;
+
+      panel.innerHTML = `
+        <div class="planet-heading">
+          <div>
+            <h2>${planet.name}</h2>
+            <p>${planet.summary}</p>
+          </div>
+          <span class="count-pill">${countText}</span>
+        </div>
+        <div class="mnemonic"><small>Memory hook</small>${planet.mnemonic}</div>
+        ${planet.moons.length ? `
+          <div class="moon-grid">
+            ${planet.moons.map(moon => `
+              <article class="moon-card">
+                <strong>${moon.name}</strong>
+                <p>${moon.fact}</p>
+                <span class="tag">${moon.tag}</span>
+              </article>
+            `).join("")}
+          </div>
+        ` : `<div class="empty-note">One less planet to revise. ✓</div>`}
+      `;
+    }
+
+    /* 23A — QUIZ HELPERS ---------------------------------------------------- */
+    function shuffled(array) {
+      const copy = [...array];
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    }
+
+    function pickQuestionMoon() {
+      // Prefer moons the learner has answered correctly fewer than two times.
+      const weak = QUIZ_MOONS.filter(m => (state.moonCorrect[m.name] || 0) < 2);
+      const pool = weak.length ? weak : QUIZ_MOONS;
+      return pool[Math.floor(Math.random() * pool.length)];
+    }
+
+    function newQuestion() {
+      currentQuestion = pickQuestionMoon();
+      questionLocked = false;
+
+      const wrongPlanets = shuffled(QUIZ_PLANETS.filter(p => p !== currentQuestion.planet)).slice(0, 3);
+      const options = shuffled([currentQuestion.planet, ...wrongPlanets]);
+
+      document.getElementById("questionText").innerHTML = `Which planet does <em>${currentQuestion.name}</em> orbit?`;
+      document.getElementById("answers").innerHTML = options.map(option => `<button class="answer-btn" data-answer="${option}">${option}</button>`).join("");
+      document.getElementById("feedback").className = "feedback";
+      document.getElementById("feedback").textContent = "";
+      document.getElementById("nextQuestion").hidden = true;
+      updateQuizStreak();
+
+      document.querySelectorAll(".answer-btn").forEach(button => button.addEventListener("click", () => answerQuestion(button)));
+    }
+
+    function answerQuestion(button) {
+      if (questionLocked) return;
+      questionLocked = true;
+
+      const chosen = button.dataset.answer;
+      const correct = chosen === currentQuestion.planet;
+      state.answered += 1;
+
+      document.querySelectorAll(".answer-btn").forEach(btn => {
+        btn.disabled = true;
+        if (btn.dataset.answer === currentQuestion.planet) btn.classList.add("correct");
+      });
+
+      const feedback = document.getElementById("feedback");
+      if (correct) {
+        state.correct += 1;
+        state.streak += 1;
+        state.bestStreak = Math.max(state.bestStreak, state.streak);
+        state.planetCorrect[currentQuestion.planet] = (state.planetCorrect[currentQuestion.planet] || 0) + 1;
+        state.moonCorrect[currentQuestion.name] = (state.moonCorrect[currentQuestion.name] || 0) + 1;
+        feedback.className = "feedback good";
+        feedback.textContent = `Correct. ${currentQuestion.name} → ${currentQuestion.planet}. ${currentQuestion.fact}`;
+      } else {
+        state.streak = 0;
+        button.classList.add("wrong");
+        feedback.className = "feedback bad";
+        feedback.textContent = `${currentQuestion.name} orbits ${currentQuestion.planet}. ${currentQuestion.fact}`;
+      }
+
+      saveState();
+      updateQuizStreak();
+      document.getElementById("nextQuestion").hidden = false;
+    }
+
+    document.getElementById("nextQuestion").addEventListener("click", newQuestion);
+
+    function updateQuizStreak() {
+      document.getElementById("quizStreak").textContent = `${state.streak} streak`;
+    }
+
+    /* 24A — CHALLENGE MODE -------------------------------------------------- */
+    function challengePlanets() {
+      return PLANETS.filter(p => p.moons.length > 0);
+    }
+
+    function currentChallengePlanet() {
+      const list = challengePlanets();
+      challengeIndex = ((challengeIndex % list.length) + list.length) % list.length;
+      return list[challengeIndex];
+    }
+
+    function renderChallenge() {
+      const planet = currentChallengePlanet();
+      document.getElementById("challengePlanet").textContent = planet.name;
+      document.getElementById("challengeTarget").textContent = `${challengeFound.size} of ${planet.moons.length} recalled`;
+      document.getElementById("foundList").innerHTML = [...challengeFound].map(name => `<span class="found-chip">${name}</span>`).join("");
+    }
+
+    function normalise(text) {
+      return text.trim().toLowerCase().replace(/[^a-z]/g, "");
+    }
+
+    document.getElementById("typeForm").addEventListener("submit", event => {
+      event.preventDefault();
+      const input = document.getElementById("moonInput");
+      const value = normalise(input.value);
+      const planet = currentChallengePlanet();
+      const match = planet.moons.find(m => normalise(m.name) === value);
+      const message = document.getElementById("challengeMessage");
+
+      if (!value) return;
+
+      if (match && !challengeFound.has(match.name)) {
+        challengeFound.add(match.name);
+        message.textContent = challengeFound.size === planet.moons.length ? `Perfect — all ${planet.moons.length}. Move on when you're ready.` : `Yes — ${match.name}.`;
+        input.value = "";
+        renderChallenge();
+      } else if (match) {
+        message.textContent = `${match.name} is already on your list.`;
+        input.select();
+      } else {
+        message.textContent = `Not one of this learning set for ${planet.name}. Try again.`;
+        input.select();
+      }
+    });
+
+    document.getElementById("revealBtn").addEventListener("click", () => {
+      const planet = currentChallengePlanet();
+      const missing = planet.moons.filter(m => !challengeFound.has(m.name)).map(m => m.name);
+      const message = document.getElementById("challengeMessage");
+
+      if (missing.length) {
+        message.textContent = `Missing: ${missing.join(", ")}. Press again to move to the next planet.`;
+        missing.forEach(name => challengeFound.add(name));
+        renderChallenge();
+        document.getElementById("revealBtn").textContent = "Next planet →";
+      } else {
+        challengeIndex += 1;
+        challengeFound = new Set();
+        message.textContent = "";
+        document.getElementById("revealBtn").textContent = "Reveal / move on";
+        renderChallenge();
+        document.getElementById("moonInput").value = "";
+        document.getElementById("moonInput").focus();
+      }
+    });
+
+    /* 25A — PROGRESS -------------------------------------------------------- */
+    function renderStats() {
+      const accuracy = state.answered ? `${Math.round((state.correct / state.answered) * 100)}%` : "—";
+      const mastered = QUIZ_MOONS.filter(m => (state.moonCorrect[m.name] || 0) >= 2).length;
+      document.getElementById("statAccuracy").textContent = accuracy;
+      document.getElementById("statStreak").textContent = state.bestStreak;
+      document.getElementById("statMastered").textContent = `${mastered}/${QUIZ_MOONS.length}`;
+    }
+
+    function renderMastery() {
+      const root = document.getElementById("masteryList");
+      if (!root) return;
+
+      root.innerHTML = PLANETS.filter(p => p.moons.length > 0).map(planet => {
+        const learnt = planet.moons.filter(m => (state.moonCorrect[m.name] || 0) >= 2).length;
+        const pct = Math.round((learnt / planet.moons.length) * 100);
+        return `
+          <div class="mastery-row">
+            <span>${planet.name}</span>
+            <div class="mastery-track"><div class="mastery-fill" style="width:${pct}%"></div></div>
+            <span>${pct}%</span>
+          </div>
+        `;
+      }).join("");
+    }
+
+    document.getElementById("resetProgress").addEventListener("click", () => {
+      if (!confirm("Reset all Moon Atlas quiz progress on this device?")) return;
+      state = { ...defaultState, planetCorrect: {}, moonCorrect: {} };
+      localStorage.removeItem(STORAGE_KEY);
+      renderStats();
+      renderMastery();
+      updateQuizStreak();
+    });
+
+    /* 26A — INITIALISE ------------------------------------------------------ */
+    renderPlanetStrip();
+    renderLearnPanel();
+    renderStats();
+    renderMastery();
+    renderChallenge();
+  </script>
+</body>
+</html>
