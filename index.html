@@ -4,10 +4,10 @@ title: Projects
 ---
 
 <!-- ============================================================
-     00A. NEW PROJECT ORBIT PLACEMENT
-     These additions deliberately use smaller desktop orbits so the
-     original full-screen constellation remains readable. Mobile uses
-     the existing two-column grid and ignores these absolute positions.
+     00A. PROJECT ORBIT PLACEMENT
+     Smaller satellite orbits keep the full-screen constellation
+     readable as new work is added. Mobile uses the existing two-
+     column grid and ignores these absolute positions.
      ============================================================ -->
 <style>
   .orbit-verbum { --size:54px; --colour:#d4a66f; left:53%; top:8%; }
@@ -16,6 +16,16 @@ title: Projects
   .orbit-plates { --size:54px; --colour:#8db6e8; left:43%; top:78%; }
   .orbit-departements { --size:56px; --colour:#f4bd4b; left:88%; top:8%; }
   .orbit-road { --size:54px; --colour:#a7d37d; left:91%; top:43%; }
+
+  /* 00B. PROJECTS ADDED SINCE THE AUGUST HOMEPAGE REFRESH */
+  .orbit-moons { --size:48px; --colour:#9b8cff; left:75%; top:2%; }
+  .orbit-touch { --size:46px; --colour:#ff78bd; left:31%; top:82%; }
+  .orbit-gyw { --size:50px; --colour:#d7a86e; left:4%; top:76%; }
+  .orbit-topthat { --size:52px; --colour:#f6ca63; left:86%; top:82%; }
+  .orbit-homeplanet { --size:56px; --colour:#d8b16a; left:78%; top:20%; }
+  .orbit-livingearth { --size:54px; --colour:#62d3c6; left:4%; top:42%; }
+  .orbit-gallery { --size:54px; --colour:#d8946f; left:58%; top:52%; }
+  .orbit-orrery { --size:50px; --colour:#b8c5d1; left:32%; top:2%; }
 </style>
 
 <main>
@@ -42,7 +52,7 @@ title: Projects
 
     <svg class="constellation-lines" id="constellation-lines" aria-hidden="true" preserveAspectRatio="none">
       <defs>
-        <filter id="line-glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="2.2" result="blur"></feGaussianBlur><feMerge><feMergeNode in="blur"></feMergeNode><feMergeNode in="SourceGraphic"></feMergeNode></feMerge></filter>
+        <filter id="line-glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="2.2" result="blur"></feGaussianBlur><feMerge><feMergeNode in="blur"></feMergeNode><feMergeNode in="SourceGraphic"></feMerge></filter>
       </defs>
       <g id="constellation-line-group"></g>
     </svg>
@@ -93,7 +103,7 @@ title: Projects
       </a>
 
       <!-- ========================================================
-           01A. NEW LEARNING, EXPLORATION AND SPOTTING PROJECTS
+           01A. LEARNING, EXPLORATION AND SPOTTING PROJECTS
            ======================================================== -->
       <a class="project-orbit orbit-verbum" href="https://pelld.github.io/Verbum/" data-index="11" data-group="explore" data-colour="#d4a66f" data-title="Verbum" data-description="Build English, French and Spanish vocabulary with recall and spaced review." aria-label="Open Verbum">
         <span class="orbit-ring"><i></i><b>↗</b></span><span class="orbit-label">Verbum</span>
@@ -117,6 +127,41 @@ title: Projects
 
       <a class="project-orbit orbit-road" href="https://pelld.github.io/vehicle-spotter/" data-index="16" data-group="play" data-colour="#a7d37d" data-title="Road Spotter" data-description="Count the vehicle makes and models you see on the road." aria-label="Open Road Spotter">
         <span class="orbit-ring"><i></i><b>↗</b></span><span class="orbit-label">Road spotter</span>
+      </a>
+
+      <!-- ========================================================
+           01B. RECENT PROJECTS — AUGUST / SEPTEMBER 2026
+           ======================================================== -->
+      <a class="project-orbit orbit-moons" href="https://pelld.github.io/moons/" data-index="17" data-group="explore" data-colour="#9b8cff" data-title="Moon Atlas" data-description="Learn and practise the major moons of the planets in the Solar System." aria-label="Open Moon Atlas">
+        <span class="orbit-ring"><i></i><b>↗</b></span><span class="orbit-label">Moon atlas</span>
+      </a>
+
+      <a class="project-orbit orbit-touch" href="https://pelld.github.io/touch/" data-index="18" data-group="explore" data-colour="#ff78bd" data-title="Touch" data-description="A minimal full-screen colour experiment: touch and hold the surface to paint through the spectrum." aria-label="Open Touch">
+        <span class="orbit-ring"><i></i><b>↗</b></span><span class="orbit-label">Touch</span>
+      </a>
+
+      <a class="project-orbit orbit-gyw" href="https://pelld.github.io/GYW/" data-index="19" data-group="explore" data-colour="#d7a86e" data-title="Goodyear Welt" data-description="Take apart Goodyear-welt shoe construction through interactive anatomy, process, history and repair." aria-label="Open Goodyear Welt">
+        <span class="orbit-ring"><i></i><b>↗</b></span><span class="orbit-label">Goodyear welt</span>
+      </a>
+
+      <a class="project-orbit orbit-topthat" href="https://pelld.github.io/topthat/" data-index="20" data-group="play" data-colour="#f6ca63" data-title="Top That" data-description="A quick Top Trumps-style card game across themed decks including vehicles, animals and moons." aria-label="Open Top That">
+        <span class="orbit-ring"><i></i><b>↗</b></span><span class="orbit-label">Top That</span>
+      </a>
+
+      <a class="project-orbit orbit-homeplanet" href="https://pelld.github.io/homeplanet/" data-index="21" data-group="explore" data-colour="#d8b16a" data-title="Home Planet" data-description="A solar-system homepage experiment with planets, moons, a comet and asteroid-belt links." aria-label="Open Home Planet">
+        <span class="orbit-ring"><i></i><b>↗</b></span><span class="orbit-label">Home planet</span>
+      </a>
+
+      <a class="project-orbit orbit-livingearth" href="https://pelld.github.io/livingearth/" data-index="22" data-group="explore" data-colour="#62d3c6" data-title="Living Earth" data-description="Explore plate boundaries, volcanoes and recent earthquakes on an interactive world map." aria-label="Open Living Earth">
+        <span class="orbit-ring"><i></i><b>↗</b></span><span class="orbit-label">Living Earth</span>
+      </a>
+
+      <a class="project-orbit orbit-gallery" href="https://pelld.github.io/gallery/" data-index="23" data-group="explore" data-colour="#d8946f" data-title="Gallery" data-description="Move through a three-dimensional gallery of paintings and open the works from their frames." aria-label="Open Gallery">
+        <span class="orbit-ring"><i></i><b>↗</b></span><span class="orbit-label">Gallery</span>
+      </a>
+
+      <a class="project-orbit orbit-orrery" href="https://pelld.github.io/orrery/" data-index="24" data-group="explore" data-colour="#b8c5d1" data-title="Orrery" data-description="A photorealistic WebGL orrery used as an experimental way to navigate projects." aria-label="Open Orrery">
+        <span class="orbit-ring"><i></i><b>↗</b></span><span class="orbit-label">Orrery</span>
       </a>
     </div>
 
