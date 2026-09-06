@@ -1,11 +1,13 @@
 /* ============================================================
    00. CONSTELLATION RELATIONSHIPS
-   The network mixes thematic connections within analysis and games
-   with a few bridges between mapping, place and personalised play.
+   The network mixes thematic connections within analysis, exploration
+   and games, with bridges between maps, learning and experiments.
    ============================================================ */
 const CONSTELLATION_CONNECTIONS = [
   [0,1],[0,3],[1,2],[1,3],[1,4],[1,5],[2,3],[3,4],
-  [5,7],[6,7],[6,9],[6,10],[7,8],[7,10],[8,9],[8,10],[9,10]
+  [5,7],[6,7],[6,9],[6,10],[7,8],[7,10],[8,9],[8,10],[9,10],
+  [3,22],[5,22],[5,23],[6,20],[12,17],[12,19],[17,20],[17,21],
+  [17,24],[18,24],[21,24],[23,24]
 ];
 
 /* ============================================================
