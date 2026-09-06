@@ -19,6 +19,14 @@ const DIRECTORY_CONFIG = {
   ],
 
   fallbackRepositories: [
+    { name: "gallery", description: "Move through a three-dimensional gallery of paintings and open the works from their frames." },
+    { name: "orrery", description: "A photorealistic WebGL orrery used as an experimental way to navigate projects." },
+    { name: "livingearth", description: "Explore plate boundaries, volcanoes and recent earthquakes on an interactive world map." },
+    { name: "homeplanet", description: "A solar-system homepage experiment with planets, moons, a comet and asteroid-belt links." },
+    { name: "topthat", description: "A quick Top Trumps-style card game across themed decks." },
+    { name: "touch", description: "A minimal full-screen colour experiment driven by touch duration." },
+    { name: "GYW", description: "Interactive anatomy, process, history and repair of Goodyear-welt shoe construction." },
+    { name: "moons", description: "Learn and practise the major moons of the planets in the Solar System." },
     { name: "tree", description: "Explore museum-quality insect photographs at their original detail." },
     { name: "Candela", description: "Interactive GCSE physics revision with questions and simulations." },
     { name: "Verbum", description: "Build English, French and Spanish vocabulary with recall and review." },
@@ -53,7 +61,26 @@ const DISPLAY_NAMES = {
   "tree": "Natural History Close-Up",
   "departement-spotter": "Département Spotter",
   "number-plates": "Platewise",
-  "vehicle-spotter": "Road Spotter"
+  "vehicle-spotter": "Road Spotter",
+  "moons": "Moon Atlas",
+  "touch": "Touch",
+  "GYW": "Goodyear Welt",
+  "topthat": "Top That",
+  "homeplanet": "Home Planet",
+  "livingearth": "Living Earth",
+  "gallery": "Gallery",
+  "orrery": "Orrery"
+};
+
+const DESCRIPTION_OVERRIDES = {
+  "moons": "Learn and practise the major moons of the planets in the Solar System.",
+  "touch": "A minimal full-screen colour experiment: touch and hold the surface to paint through the spectrum.",
+  "GYW": "Take apart Goodyear-welt shoe construction through interactive anatomy, process, history and repair.",
+  "topthat": "A quick Top Trumps-style card game across themed decks including vehicles, animals and moons.",
+  "homeplanet": "A solar-system homepage experiment with planets, moons, a comet and asteroid-belt links.",
+  "livingearth": "Explore plate boundaries, volcanoes and recent earthquakes on an interactive world map.",
+  "gallery": "Move through a three-dimensional gallery of paintings and open the works from their frames.",
+  "orrery": "A photorealistic WebGL orrery used as an experimental way to navigate projects."
 };
 
 /* ============================================================
@@ -66,12 +93,19 @@ function titleFromRepository(name) {
   return DISPLAY_NAMES[name] || name.split("-").map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(" ");
 }
 
+function descriptionFromRepository(repository) {
+  return DESCRIPTION_OVERRIDES[repository.name] || repository.description || "A public GitHub Pages project.";
+}
+
 function categoryFromRepository(repository) {
   const topics = repository.topics || [];
-  if (repository.name === "Verbum" || repository.name === "Candela") return "Learning";
+  if (repository.name === "Verbum" || repository.name === "Candela" || repository.name === "moons") return "Learning";
   if (repository.name === "tree") return "Natural history";
   if (repository.name === "number-plates") return "Reference";
-  if (topics.includes("game") || /game|dash|quiz|spotter/.test(repository.name)) return "Game";
+  if (repository.name === "GYW") return "Explainer";
+  if (repository.name === "livingearth") return "Map";
+  if (["touch", "homeplanet", "gallery", "orrery"].includes(repository.name)) return "Experiment";
+  if (repository.name === "topthat" || topics.includes("game") || /game|dash|quiz|spotter/.test(repository.name)) return "Game";
   if (topics.includes("population-health") || repository.name.startsWith("population-health-") || repository.name === "patient-flow-explorer") return "Population health";
   if (topics.includes("evidence") || /p-value|evidence/.test(repository.name)) return "Evidence";
   if (topics.includes("tool")) return "Tool";
@@ -99,13 +133,14 @@ function renderDirectory(repositories) {
     const title = document.createElement("h3");
     const description = document.createElement("p");
     const link = document.createElement("b");
+    const projectDescription = descriptionFromRepository(repository);
 
     card.className = "directory-card";
     card.href = pagesUrl(repository);
-    card.dataset.search = `${titleFromRepository(repository.name)} ${categoryFromRepository(repository)} ${repository.description || ""}`.toLowerCase();
+    card.dataset.search = `${titleFromRepository(repository.name)} ${categoryFromRepository(repository)} ${projectDescription}`.toLowerCase();
     category.textContent = categoryFromRepository(repository);
     title.textContent = titleFromRepository(repository.name);
-    description.textContent = repository.description || "A public GitHub Pages project.";
+    description.textContent = projectDescription;
     link.textContent = "Open site";
     card.append(category, title, description, link);
     container.append(card);
